@@ -7,9 +7,13 @@ export const LocaleSchema = z.object({
   logoCredit: z.string(),
   enters: z.object({
     chooseAction: z.string(),
+    chooseLanguage: z.string(),
+    chooseSettings: z.string(),
   }),
   choices: z.object({
     main: z.array(ChoiceSchema),
+    settings: z.array(ChoiceSchema),
+    languages: z.array(ChoiceSchema),
   }),
 });
 

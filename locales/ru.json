@@ -2,7 +2,9 @@
   "logo": "Ll9fX19fXyAgLl9fX19fXyAgLl9fXyAgICAgLl9fX19fX18uX19fX19fICAuX19fX19fX19fX19fLl8KOiBfXyAgIFwgOiAgICAgIFwgfCAgIHxfX18gOiAuX19fXy86ICAgICAgXCA6IC5fX19fL1xfXyBfOnwKfCAgXF9fX198fCAgIC4gICB8fCAgIHwgICB8fCA6IF8vXCB8ICAgICAgIHx8IDogXy9cICAgfCAgOnwKfCAgIDogIFwgfCAgIDogICB8fCAgIDogICB8fCAgIC8gIFx8ICAgfCAgIHx8ICAgLyAgXCAgfCAgIHwKfCAgIHxfX19cfF9fX3wgICB8IFwgICAgICB8fF8uOiBfXy98X19ffCAgIHx8Xy46IF9fLyAgfCAgIHwKfF9fX3wgICAgICAgIHxfX198ICBcX19fXy8gICAgOi8gICAgICAgfF9fX3wgICA6LyAgICAgfF9fX3w=",
   "logoCredit": "       Script by celt\n",
   "enters": {
-    "chooseAction": "Выберите действие:"
+    "chooseAction": "Выберите действие:",
+    "chooseLanguage": "Выберите язык:",
+    "chooseSettings": "Выберите настройку:"
   },
   "choices": {
     "main": [
@@ -20,6 +22,30 @@
         "name": "Настройки",
         "description": "Настройки ботнета",
         "value": "settings"
+      }
+    ],
+    "settings": [
+      {
+        "name": "Изменить язык",
+        "description": "Изменить язык ботнета",
+        "value": "changeLanguage"
+      },
+      {
+        "name": "Назад",
+        "description": "Вернуться к предыдущему меню",
+        "value": "back"
+      }
+    ],
+    "languages": [
+      {
+        "name": "Английский",
+        "description": "Английский язык",
+        "value": "en"
+      },
+      {
+        "name": "Русский",
+        "description": "Русский язык",
+        "value": "ru"
       }
     ]
   }
