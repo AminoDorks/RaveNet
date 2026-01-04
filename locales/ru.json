@@ -5,30 +5,69 @@
     "chooseAction": "Выберите действие:",
     "chooseLanguage": "Выберите язык:",
     "chooseSettings": "Выберите настройку:",
-    "enterTorPassword": "Введите пароль Tor:"
+    "enterTorPassword": "Введите пароль Tor:",
+    "chooseFunction": "Выберите функцию:",
+    "enterNickname": "Введите никнейм:"
   },
   "errors": {
-    "couldntFindTorrc": "Не удалось найти файл torrc"
+    "couldntFindTorrc": "Не удалось найти файл torrc",
+    "torConnectionFailed": "Не удалось подключиться к Tor",
+    "proxyConnectionFailed": "Не удалось подключиться к прокси",
+    "contextCreationFailed": "Не удалось создать контекст",
+    "profileChangeFailed": "Не удалось изменить профиль"
   },
   "logs": {
-    "torConfigured": "Tor настроен успешно"
+    "torConfigured": "Tor настроен успешно",
+    "torConnected": "Tor подключен успешно",
+    "proxyConnected": "Прокси подключен успешно",
+    "allProxiesConnected": "Всего прокси подключено",
+    "contextCreated": "Контекст создан успешно",
+    "allContextsCreated": "Аккаунтов готово для использования",
+    "profileChanged": "Профиль изменен успешно"
   },
   "choices": {
     "main": [
       {
-        "name": "Рейд функции",
-        "description": "Функции для рейда, разрушения и других разорительных действий",
-        "value": "raid"
-      },
-      {
-        "name": "Функции по умолчанию",
-        "description": "Функции для управления аккаунтами и т.д.",
-        "value": "default"
+        "name": "Функции",
+        "description": "Функции для рейда и управления аккаунтами",
+        "value": "functions"
       },
       {
         "name": "Настройки",
         "description": "Настройки ботнета",
         "value": "settings"
+      }
+    ],
+    "functions": [
+      {
+        "name": "Рейд румы",
+        "description": "Функции для рейда одной комнаты",
+        "value": "raidRoom"
+      },
+      {
+        "name": "Рейд всех рум",
+        "description": "Функции для рейда всех комнат",
+        "value": "raidAllRooms"
+      },
+      {
+        "name": "Рейд заявкой в друзья",
+        "description": "Функции для рейда с помощью заявки в друзья",
+        "value": "raidFriends"
+      },
+      {
+        "name": "Изменить профиль",
+        "description": "Изменить профиль всех аккаунтов",
+        "value": "changeProfile"
+      },
+      {
+        "name": "Обновить прокси",
+        "description": "Обновить прокси для ботнета",
+        "value": "updateProxy"
+      },
+      {
+        "name": "Назад",
+        "description": "Вернуться к предыдущему меню",
+        "value": "back"
       }
     ],
     "settings": [

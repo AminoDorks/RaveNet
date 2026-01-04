@@ -25,12 +25,12 @@ export class SettingsHandler implements Handler {
   };
 
   async handle(): Promise<void> {
-    const settings = await buildSelect(
+    const setting = await buildSelect(
       SCREEN.locale.enters.chooseSettings,
       SCREEN.locale.choices.settings,
     );
 
-    switch (settings) {
+    switch (setting) {
       case 'changeLanguage': {
         await this.__languageCallback();
         break;

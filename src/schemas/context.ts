@@ -5,7 +5,7 @@ import z from 'zod';
 export const ContextSchema = z.object({
   instance: z.instanceof(Rave),
   proxy: z.string(),
-  sockets: z.record(z.string(), z.instanceof(MeshSocket)),
+  sockets: z.record(z.string(), z.instanceof(MeshSocket)).optional(),
 });
 
 export type Context = z.infer<typeof ContextSchema>;

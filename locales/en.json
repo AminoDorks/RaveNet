@@ -5,30 +5,60 @@
     "chooseAction": "Choose an action:",
     "chooseLanguage": "Choose a language:",
     "chooseSettings": "Choose settings:",
-    "enterTorPassword": "Enter Tor password:"
+    "enterTorPassword": "Enter Tor password:",
+    "chooseFunction": "Choose function:",
+    "enterNickname": "Enter nickname:"
   },
   "errors": {
-    "couldntFindTorrc": "Could not find torrc file"
+    "couldntFindTorrc": "Could not find torrc file",
+    "torConnectionFailed": "Could not connect to Tor",
+    "contextCreationFailed": "Could not create context"
   },
   "logs": {
-    "torConfigured": "Tor configured successfully"
+    "torConfigured": "Tor configured successfully",
+    "torConnected": "Tor connected successfully",
+    "allProxiesConnected": "All connected proxies",
+    "contextCreated": "Context created successfully",
+    "allContextsCreated": "Accounts ready for use"
   },
   "choices": {
     "main": [
       {
-        "name": "Raid functions",
-        "description": "Functions for raiding, destruction, and other malicious activities",
-        "value": "raid"
-      },
-      {
-        "name": "Default functions",
-        "description": "Functions for accounts control, etc",
-        "value": "default"
+        "name": "Botnet functions",
+        "description": "Functions for raiding and accounts control",
+        "value": "functions"
       },
       {
         "name": "Settings",
         "description": "Configure botnet settings",
         "value": "settings"
+      }
+    ],
+    "functions": [
+      {
+        "name": "Raid Room",
+        "description": "Functions for raiding one room",
+        "value": "raidRoom"
+      },
+      {
+        "name": "Raid All Rooms",
+        "description": "Functions for raiding all rooms",
+        "value": "raidAllRooms"
+      },
+      {
+        "name": "Raid Friends",
+        "description": "Functions for raiding with friend requests",
+        "value": "raidFriends"
+      },
+      {
+        "name": "Change profile",
+        "description": "Change all accounts profile",
+        "value": "changeProfile"
+      },
+      {
+        "name": "Update Proxy",
+        "description": "Update proxy for botnet",
+        "value": "updateProxy"
       }
     ],
     "settings": [

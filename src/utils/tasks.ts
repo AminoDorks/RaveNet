@@ -1,7 +1,10 @@
+import { CallbackArgs } from '../schemas/callback';
+
 export const pool = async <T>(
   props: T[],
-  callback: (arg: T) => Promise<void>,
+  callback: (arg: T, additionalArgs: CallbackArgs) => Promise<void>,
   maxConcurrency: number,
+  args: CallbackArgs = {},
 ) => {
   const queue = [...props];
   const promises: Promise<void>[] = [];
@@ -11,7 +14,7 @@ export const pool = async <T>(
       while (queue.length > 0) {
         const prop = queue.shift();
         if (prop != undefined) {
-          await callback(prop);
+          await callback(prop, args);
         }
       }
     };

@@ -1,12 +1,17 @@
 import { homedir } from 'os';
 
-import { DefaultHandler, RaidHandler, SettingsHandler } from './handlers';
+import { FunctionsHandler, SettingsHandler } from './handlers';
 import { Handler } from './interfaces/handler';
 import { Cache, CacheSchema } from './schemas/cache';
 import { Config, ConfigSchema } from './schemas/config';
-import { Context } from './schemas/context';
 import { Screen } from './ui/screen';
 import { load, makeIfIsnt } from './utils/loaders';
+
+export const MAX_BATCHES = {
+  proxy: 35,
+  contexts: 20,
+  callbacks: 50,
+};
 
 export const COLORS = {
   red: '\x1b[31m',
@@ -46,16 +51,15 @@ export const CUSTOM_THEME = {
 };
 
 export const HANDLERS: Record<string, Handler> = {
-  raid: new RaidHandler(),
-  default: new DefaultHandler(),
+  functions: new FunctionsHandler(),
   settings: new SettingsHandler(),
 };
 
-export const CONTEXTS: Context[] = [];
 export const ACCOUNTS = [...load<Cache>(PATHS.cache, CacheSchema).accounts];
 export const CONFIG: Config = makeIfIsnt<Config>(
   PATHS.config,
   { locale: 'en', torPassword: '', torPort: 9, proxies: [] },
   ConfigSchema,
 );
+export const LOCALHOST = '127.0.0.1';
 export const SCREEN = new Screen(CONFIG.locale);
