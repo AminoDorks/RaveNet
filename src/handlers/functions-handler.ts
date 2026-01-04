@@ -45,14 +45,9 @@ export class FunctionsHandler implements Handler {
       MAX_BATCHES.contexts,
       async (proxy: string, accounts: Account[]) => {
         for (const account of accounts) {
-          const instance = new Rave({
-            credentials: {
-              token: account.token,
-              deviceId: account.deviceId,
-            },
-          });
+          const instance = new Rave();
           try {
-            await instance.getAccount();
+            await instance.auth.authenticate(account.token, account.deviceId);
           } catch {
             display(SCREEN.locale.errors.contextCreationFailed, [
               account.email,
