@@ -4,7 +4,14 @@
   "enters": {
     "chooseAction": "Выберите действие:",
     "chooseLanguage": "Выберите язык:",
-    "chooseSettings": "Выберите настройку:"
+    "chooseSettings": "Выберите настройку:",
+    "enterTorPassword": "Введите пароль Tor:"
+  },
+  "errors": {
+    "couldntFindTorrc": "Не удалось найти файл torrc"
+  },
+  "logs": {
+    "torConfigured": "Tor настроен успешно"
   },
   "choices": {
     "main": [
@@ -29,6 +36,11 @@
         "name": "Изменить язык",
         "description": "Изменить язык ботнета",
         "value": "changeLanguage"
+      },
+      {
+        "name": "Изменить пароль Tor",
+        "description": "Изменить пароль для подключения к Tor",
+        "value": "changeTorPassword"
       },
       {
         "name": "Назад",

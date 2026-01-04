@@ -9,6 +9,13 @@ export const LocaleSchema = z.object({
     chooseAction: z.string(),
     chooseLanguage: z.string(),
     chooseSettings: z.string(),
+    enterTorPassword: z.string(),
+  }),
+  errors: z.object({
+    couldntFindTorrc: z.string(),
+  }),
+  logs: z.object({
+    torConfigured: z.string(),
   }),
   choices: z.object({
     main: z.array(ChoiceSchema),

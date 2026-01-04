@@ -1,9 +1,11 @@
+import { homedir } from 'os';
+
 import { DefaultHandler, RaidHandler, SettingsHandler } from './handlers';
 import { Handler } from './interfaces/handler';
 import { Cache, CacheSchema } from './schemas/cache';
-import { ConfigSchema } from './schemas/config';
+import { Config, ConfigSchema } from './schemas/config';
+import { Context } from './schemas/context';
 import { Screen } from './ui/screen';
-import { readSplitLines } from './utils/helpers';
 import { load, makeIfIsnt } from './utils/loaders';
 
 export const COLORS = {
@@ -16,6 +18,17 @@ export const PATHS = {
   config: '../config.json',
   proxies: '../proxies.txt',
   locales: '../locales/%s.json',
+};
+
+export const TORRC_PATHS = {
+  win: ['C:/Tor Browser/Browser/TorBrowser/Data/Tor/torrc'],
+  unix: [
+    '/etc/tor/torrc',
+    '/usr/local/etc/tor/torrc',
+    '/etc/torrc',
+    `${homedir()}/.tor/torrc`,
+    `${homedir()}/torrc`,
+  ],
 };
 
 export const CUSTOM_THEME = {
@@ -38,7 +51,11 @@ export const HANDLERS: Record<string, Handler> = {
   settings: new SettingsHandler(),
 };
 
-export const PROXIES = readSplitLines(PATHS.proxies);
+export const CONTEXTS: Context[] = [];
 export const ACCOUNTS = [...load<Cache>(PATHS.cache, CacheSchema).accounts];
-export const CONFIG = makeIfIsnt(PATHS.config, { locale: 'en' }, ConfigSchema);
+export const CONFIG: Config = makeIfIsnt<Config>(
+  PATHS.config,
+  { locale: 'en', torPassword: '', torPort: 9, proxies: [] },
+  ConfigSchema,
+);
 export const SCREEN = new Screen(CONFIG.locale);
