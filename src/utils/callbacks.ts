@@ -15,3 +15,8 @@ export const changeProfileCallback = async (
     display(SCREEN.locale.errors.profileChangeFailed, [context.instance.token]);
   }
 };
+
+export const sendFriendshipCallback = async (
+  context: Context,
+  args: CallbackArgs,
+) => {};

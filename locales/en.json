@@ -12,14 +12,18 @@
   "errors": {
     "couldntFindTorrc": "Could not find torrc file",
     "torConnectionFailed": "Could not connect to Tor",
-    "contextCreationFailed": "Could not create context"
+    "contextCreationFailed": "Could not create context",
+    "proxyConnectionFailed": "Could not connect to proxy",
+    "profileChangeFailed": "Could not change profile"
   },
   "logs": {
     "torConfigured": "Tor configured successfully",
     "torConnected": "Tor connected successfully",
     "allProxiesConnected": "All connected proxies",
     "contextCreated": "Context created successfully",
-    "allContextsCreated": "Accounts ready for use"
+    "allContextsCreated": "Accounts ready for use",
+    "proxyConnected": "Proxy connected successfully",
+    "profileChanged": "Profile changed successfully"
   },
   "choices": {
     "main": [
