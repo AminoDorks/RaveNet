@@ -75,7 +75,8 @@ export class FunctionsHandler implements Handler {
           }
 
           this.__contexts.push({
-            proxy,
+            proxy:
+              this.__proxies[Math.floor(Math.random() * this.__proxies.length)],
             sockets: {},
             instance,
           });
@@ -131,7 +132,9 @@ export class FunctionsHandler implements Handler {
         SCREEN.locale.enters.chooseMeshLocale,
         SCREEN.locale.choices.locales,
       )) as Languages,
+      isPublic: true,
     });
+    console.log(meshes.data.map((mesh) => mesh.mesh.videoTitle));
 
     return meshes.data;
   };
@@ -147,35 +150,51 @@ export class FunctionsHandler implements Handler {
 
     await this.__processTask(changeProfileCallback, {
       displayAvatar,
-      displayName: await buildInput(SCREEN.locale.enters.enterNickname),
+      displayName: CONFIG.nickname,
     });
   };
 
   private __raidAllRooms = async (meshes: Mesh[]) => {
     const contextBatches: Context[][] = [];
-    const accountsPerMesh = Math.floor(meshes.length / this.__contexts.length);
-    const promises = [];
 
-    for (let i = 0; i < meshes.length; i += accountsPerMesh) {
-      contextBatches.push(this.__contexts.slice(i, i + accountsPerMesh));
+    for (let i = 0; i < meshes.length; i++) {
+      const accountsPerMesh = Math.floor(
+        this.__contexts.length / meshes.length,
+      );
+      const startIndex = i * accountsPerMesh;
+      const endIndex = startIndex + accountsPerMesh;
+      const batch = this.__contexts.slice(startIndex, endIndex);
+      contextBatches.push(batch);
     }
 
-    for (const batch of contextBatches) {
+    const promises: Promise<void>[] = [];
+
+    for (let i = 0; i < meshes.length; i++) {
+      const mesh = meshes[i];
+      const contextBatch = contextBatches[i];
+
       const worker = async () => {
-        await pool<Context>(
-          batch,
-          raidAllRoomsCallback,
-          MAX_BATCHES.callbacks,
-          {
-            meshId: meshes[contextBatches.indexOf(batch)].id,
-            message: MESSAGE,
+        const tasks = contextBatch.map((context) => ({
+          context,
+          meshId: mesh.id,
+        }));
+
+        await pool(
+          tasks,
+          async (task) => {
+            try {
+              await raidAllRoomsCallback(task.context, {
+                meshId: task.meshId,
+                message: MESSAGE,
+              });
+            } catch {}
           },
+          Math.min(MAX_BATCHES.callbacks, contextBatch.length),
         );
       };
 
       promises.push(worker());
     }
-
     await Promise.all(promises);
   };
 
@@ -184,9 +203,12 @@ export class FunctionsHandler implements Handler {
       .filter((user) => user.name != CONFIG.nickname)
       .map((user) => user.id);
 
-    while (true) {
+    const executeTask = async () => {
       await this.__processTask(sendFriendshipCallback, { userIds });
-    }
+      setTimeout(executeTask, 1000);
+    };
+
+    await executeTask();
   };
 
   private __globalDestruction = async () => {

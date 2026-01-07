@@ -36,6 +36,7 @@ export const LocaleSchema = z.object({
     meshJoined: z.string(),
     messageSent: z.string(),
     friendshipSent: z.string(),
+    connectedToMesh: z.string(),
   }),
   choices: z.object({
     main: z.array(ChoiceSchema),

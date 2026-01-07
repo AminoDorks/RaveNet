@@ -31,7 +31,8 @@
     "profileChanged": "Profile changed successfully",
     "meshJoined": "Mesh joined successfully",
     "messageSent": "Message sent successfully",
-    "friendshipSent": "Friendship request sent successfully"
+    "friendshipSent": "Friendship request sent successfully",
+    "connectedToMesh": "Connected to mesh"
   },
   "choices": {
     "main": [

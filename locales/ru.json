@@ -31,7 +31,8 @@
     "profileChanged": "Профиль изменен успешно",
     "meshJoined": "Присоединение к руму выполнено успешно",
     "messageSent": "Сообщение отправлено успешно",
-    "friendshipSent": "Заявка в друзья отправлена успешно"
+    "friendshipSent": "Заявка в друзья отправлена успешно",
+    "connectedToMesh": "Подключен к руме"
   },
   "choices": {
     "main": [
@@ -109,28 +110,28 @@
     ],
     "locales": [
       {
-        "name": "English",
-        "description": "English language",
+        "name": "Английский",
+        "description": "Английский язык",
         "value": "en"
       },
       {
-        "name": "Russian",
-        "description": "Russian language",
+        "name": "Русский",
+        "description": "Русский язык",
         "value": "ru"
       },
       {
-        "name": "Arabic",
-        "description": "Arabic language",
+        "name": "Арабский",
+        "description": "Арабский язык",
         "value": "ar"
       },
       {
-        "name": "Spanish",
-        "description": "Spanish language",
+        "name": "Испанский",
+        "description": "Испанский язык",
         "value": "es"
       },
       {
-        "name": "French",
-        "description": "French language",
+        "name": "Французский",
+        "description": "Французский язык",
         "value": "fr"
       }
     ]
