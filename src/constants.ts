@@ -67,6 +67,7 @@ export const CONFIG: Config = makeIfIsnt<Config>(
   },
   ConfigSchema,
 );
+export const MESSAGE = 'EXTERMINATUS. telegram: @aminodorks';
 export const LOCALHOST = '127.0.0.1';
 export const SEND_MESSAGE_DELAY = 1000;
 export const SCREEN = new Screen(CONFIG.locale);

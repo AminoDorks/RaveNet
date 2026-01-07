@@ -1,6 +1,13 @@
 import { Tor } from 'tor-control-ts';
 
-import { ACCOUNTS, CONFIG, LOCALHOST, MAX_BATCHES, SCREEN } from '../constants';
+import {
+  ACCOUNTS,
+  CONFIG,
+  LOCALHOST,
+  MAX_BATCHES,
+  MESSAGE,
+  SCREEN,
+} from '../constants';
 import { Handler } from '../interfaces/handler';
 import {
   buildInput,
@@ -161,6 +168,7 @@ export class FunctionsHandler implements Handler {
           MAX_BATCHES.callbacks,
           {
             meshId: meshes[contextBatches.indexOf(batch)].id,
+            message: MESSAGE,
           },
         );
       };
