@@ -134,7 +134,6 @@ export class FunctionsHandler implements Handler {
       )) as Languages,
       isPublic: true,
     });
-    console.log(meshes.data.map((mesh) => mesh.mesh.videoTitle));
 
     return meshes.data;
   };
