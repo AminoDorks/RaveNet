@@ -7,14 +7,19 @@
     "chooseSettings": "Выберите настройку:",
     "enterTorPassword": "Введите пароль Tor:",
     "chooseFunction": "Выберите функцию:",
-    "enterNickname": "Введите никнейм:"
+    "enterNickname": "Введите никнейм:",
+    "enterAvatarPath": "Введите путь к аватарке:",
+    "chooseMeshLocale": "Выберите локализацию рум:",
+    "enterMeshAmount": "Введите количество рум:"
   },
   "errors": {
     "couldntFindTorrc": "Не удалось найти файл torrc",
     "torConnectionFailed": "Не удалось подключиться к Tor",
     "proxyConnectionFailed": "Не удалось подключиться к прокси",
     "contextCreationFailed": "Не удалось создать контекст",
-    "profileChangeFailed": "Не удалось изменить профиль"
+    "profileChangeFailed": "Не удалось изменить профиль",
+    "meshJoinFailed": "Не удалось присоединиться к руме",
+    "friendshipSendFailed": "Не удалось отправить заявку в друзья"
   },
   "logs": {
     "torConfigured": "Tor настроен успешно",
@@ -23,7 +28,10 @@
     "allProxiesConnected": "Всего прокси подключено",
     "contextCreated": "Контекст создан успешно",
     "allContextsCreated": "Аккаунтов готово для использования",
-    "profileChanged": "Профиль изменен успешно"
+    "profileChanged": "Профиль изменен успешно",
+    "meshJoined": "Присоединение к руму выполнено успешно",
+    "messageSent": "Сообщение отправлено успешно",
+    "friendshipSent": "Заявка в друзья отправлена успешно"
   },
   "choices": {
     "main": [
@@ -40,19 +48,19 @@
     ],
     "functions": [
       {
-        "name": "Рейд румы",
-        "description": "Функции для рейда одной комнаты",
-        "value": "raidRoom"
-      },
-      {
         "name": "Рейд всех рум",
-        "description": "Функции для рейда всех комнат",
+        "description": "Рейдит все комнаты сообщениями",
         "value": "raidAllRooms"
       },
       {
         "name": "Рейд заявкой в друзья",
-        "description": "Функции для рейда с помощью заявки в друзья",
+        "description": "Рейдит пользователей заявкой в друзья",
         "value": "raidFriends"
+      },
+      {
+        "name": "Глобальное разрушение",
+        "description": "Рейд всех комнат + рейд заявкой в друзья",
+        "value": "globalDestruction"
       },
       {
         "name": "Изменить профиль",
@@ -97,6 +105,33 @@
         "name": "Русский",
         "description": "Русский язык",
         "value": "ru"
+      }
+    ],
+    "locales": [
+      {
+        "name": "English",
+        "description": "English language",
+        "value": "en"
+      },
+      {
+        "name": "Russian",
+        "description": "Russian language",
+        "value": "ru"
+      },
+      {
+        "name": "Arabic",
+        "description": "Arabic language",
+        "value": "ar"
+      },
+      {
+        "name": "Spanish",
+        "description": "Spanish language",
+        "value": "es"
+      },
+      {
+        "name": "French",
+        "description": "French language",
+        "value": "fr"
       }
     ]
   }

@@ -7,14 +7,19 @@
     "chooseSettings": "Choose settings:",
     "enterTorPassword": "Enter Tor password:",
     "chooseFunction": "Choose function:",
-    "enterNickname": "Enter nickname:"
+    "enterNickname": "Enter nickname:",
+    "enterAvatarPath": "Enter avatar path:",
+    "chooseMeshLocale": "Choose meshes locale:",
+    "enterMeshAmount": "Enter meshes amount:"
   },
   "errors": {
     "couldntFindTorrc": "Could not find torrc file",
     "torConnectionFailed": "Could not connect to Tor",
     "contextCreationFailed": "Could not create context",
     "proxyConnectionFailed": "Could not connect to proxy",
-    "profileChangeFailed": "Could not change profile"
+    "profileChangeFailed": "Could not change profile",
+    "meshJoinFailed": "Could not join mesh",
+    "friendshipSendFailed": "Could not send friendship request"
   },
   "logs": {
     "torConfigured": "Tor configured successfully",
@@ -23,7 +28,10 @@
     "contextCreated": "Context created successfully",
     "allContextsCreated": "Accounts ready for use",
     "proxyConnected": "Proxy connected successfully",
-    "profileChanged": "Profile changed successfully"
+    "profileChanged": "Profile changed successfully",
+    "meshJoined": "Mesh joined successfully",
+    "messageSent": "Message sent successfully",
+    "friendshipSent": "Friendship request sent successfully"
   },
   "choices": {
     "main": [
@@ -40,19 +48,19 @@
     ],
     "functions": [
       {
-        "name": "Raid Room",
-        "description": "Functions for raiding one room",
-        "value": "raidRoom"
-      },
-      {
         "name": "Raid All Rooms",
-        "description": "Functions for raiding all rooms",
+        "description": "Raid all rooms",
         "value": "raidAllRooms"
       },
       {
         "name": "Raid Friends",
-        "description": "Functions for raiding with friend requests",
+        "description": "Raid all users with friend requests",
         "value": "raidFriends"
+      },
+      {
+        "name": "Global Destruction",
+        "description": "Raid all rooms + raid all users with friend requests",
+        "value": "globalDestruction"
       },
       {
         "name": "Change profile",
@@ -92,6 +100,33 @@
         "name": "Russian",
         "description": "Russian language",
         "value": "ru"
+      }
+    ],
+    "locales": [
+      {
+        "name": "English",
+        "description": "English language",
+        "value": "en"
+      },
+      {
+        "name": "Russian",
+        "description": "Russian language",
+        "value": "ru"
+      },
+      {
+        "name": "Arabic",
+        "description": "Arabic language",
+        "value": "ar"
+      },
+      {
+        "name": "Spanish",
+        "description": "Spanish language",
+        "value": "es"
+      },
+      {
+        "name": "French",
+        "description": "French language",
+        "value": "fr"
       }
     ]
   }

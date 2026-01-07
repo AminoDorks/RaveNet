@@ -2,7 +2,12 @@ import { Tor } from 'tor-control-ts';
 
 import { ACCOUNTS, CONFIG, LOCALHOST, MAX_BATCHES, SCREEN } from '../constants';
 import { Handler } from '../interfaces/handler';
-import { buildInput, buildSelect } from '../ui/inquirer';
+import {
+  buildInput,
+  buildSelect,
+  fileFilter,
+  numericFilter,
+} from '../ui/inquirer';
 import { Context } from '../schemas/context';
 import { display } from '../ui/screen';
 import { delay } from '../utils/helpers';
@@ -10,10 +15,17 @@ import { batchPool, pool } from '../utils/tasks';
 import { Rave } from 'ravejs';
 import { Account } from '../schemas/cache';
 import { CallbackArgs, FunctionCallback } from '../schemas/callback';
-import { changeProfileCallback } from '../utils/callbacks';
+import {
+  changeProfileCallback,
+  raidAllRoomsCallback,
+  sendFriendshipCallback,
+} from '../utils/callbacks';
+import { readFileSync } from 'fs';
+import { Languages, Mesh, User } from 'ravejs/dist/schemas';
 
 export class FunctionsHandler implements Handler {
   private __tor?: Tor;
+  private __rave?: Rave;
   private __proxies: string[] = [];
   private __contexts: Context[] = [];
 
@@ -65,6 +77,8 @@ export class FunctionsHandler implements Handler {
         }
       },
     );
+
+    this.__rave = this.__contexts[0].instance;
   };
 
   private __proxySetup = async (): Promise<void> => {
@@ -99,6 +113,83 @@ export class FunctionsHandler implements Handler {
     await pool<Context>(this.__contexts, callback, MAX_BATCHES.callbacks, args);
   };
 
+  private __getMeshes = async () => {
+    const meshes = await this.__rave!.mesh.getMany({
+      limit: Number(
+        await buildInput(SCREEN.locale.enters.enterMeshAmount, {
+          filter: numericFilter,
+        }),
+      ),
+      language: (await buildSelect(
+        SCREEN.locale.enters.chooseMeshLocale,
+        SCREEN.locale.choices.locales,
+      )) as Languages,
+    });
+
+    return meshes.data;
+  };
+
+  private __changeProfile = async () => {
+    const displayAvatar = await this.__rave!.user.uploadAvatar(
+      readFileSync(
+        await buildInput(SCREEN.locale.enters.enterAvatarPath, {
+          filter: fileFilter,
+        }),
+      ),
+    );
+
+    await this.__processTask(changeProfileCallback, {
+      displayAvatar,
+      displayName: await buildInput(SCREEN.locale.enters.enterNickname),
+    });
+  };
+
+  private __raidAllRooms = async (meshes: Mesh[]) => {
+    const contextBatches: Context[][] = [];
+    const accountsPerMesh = Math.floor(meshes.length / this.__contexts.length);
+    const promises = [];
+
+    for (let i = 0; i < meshes.length; i += accountsPerMesh) {
+      contextBatches.push(this.__contexts.slice(i, i + accountsPerMesh));
+    }
+
+    for (const batch of contextBatches) {
+      const worker = async () => {
+        await pool<Context>(
+          batch,
+          raidAllRoomsCallback,
+          MAX_BATCHES.callbacks,
+          {
+            meshId: meshes[contextBatches.indexOf(batch)].id,
+          },
+        );
+      };
+
+      promises.push(worker());
+    }
+
+    await Promise.all(promises);
+  };
+
+  private __raidFriends = async (rawUsers: User[]) => {
+    const userIds = rawUsers
+      .filter((user) => user.name != CONFIG.nickname)
+      .map((user) => user.id);
+
+    while (true) {
+      await this.__processTask(sendFriendshipCallback, { userIds });
+    }
+  };
+
+  private __globalDestruction = async () => {
+    const meshesData = await this.__getMeshes();
+
+    await Promise.all([
+      this.__raidAllRooms(meshesData.flatMap((meshData) => meshData.mesh)),
+      this.__raidFriends(meshesData.flatMap((meshData) => meshData.users)),
+    ]);
+  };
+
   async handle(): Promise<void> {
     if (!this.__tor) {
       await this.__torSetup();
@@ -121,9 +212,25 @@ export class FunctionsHandler implements Handler {
 
     switch (functionName) {
       case 'changeProfile': {
-        await this.__processTask(changeProfileCallback, {
-          nickname: await buildInput(SCREEN.locale.enters.enterNickname),
-        });
+        await this.__changeProfile();
+        break;
+      }
+      case 'raidAllRooms': {
+        const meshesData = await this.__getMeshes();
+        await this.__raidAllRooms(
+          meshesData.flatMap((meshData) => meshData.mesh),
+        );
+        break;
+      }
+      case 'raidFriends': {
+        const meshesData = await this.__getMeshes();
+        await this.__raidFriends(
+          meshesData.flatMap((meshData) => meshData.users),
+        );
+        break;
+      }
+      case 'globalDestruction': {
+        await this.__globalDestruction();
         break;
       }
       case 'updateProxy': {

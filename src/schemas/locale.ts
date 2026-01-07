@@ -12,6 +12,9 @@ export const LocaleSchema = z.object({
     enterTorPassword: z.string(),
     chooseFunction: z.string(),
     enterNickname: z.string(),
+    enterAvatarPath: z.string(),
+    chooseMeshLocale: z.string(),
+    enterMeshAmount: z.string(),
   }),
   errors: z.object({
     couldntFindTorrc: z.string(),
@@ -19,6 +22,8 @@ export const LocaleSchema = z.object({
     proxyConnectionFailed: z.string(),
     contextCreationFailed: z.string(),
     profileChangeFailed: z.string(),
+    meshJoinFailed: z.string(),
+    friendshipSendFailed: z.string(),
   }),
   logs: z.object({
     torConfigured: z.string(),
@@ -28,12 +33,16 @@ export const LocaleSchema = z.object({
     contextCreated: z.string(),
     allContextsCreated: z.string(),
     profileChanged: z.string(),
+    meshJoined: z.string(),
+    messageSent: z.string(),
+    friendshipSent: z.string(),
   }),
   choices: z.object({
     main: z.array(ChoiceSchema),
     functions: z.array(ChoiceSchema),
     settings: z.array(ChoiceSchema),
     languages: z.array(ChoiceSchema),
+    locales: z.array(ChoiceSchema),
   }),
 });
 

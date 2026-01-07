@@ -58,8 +58,15 @@ export const HANDLERS: Record<string, Handler> = {
 export const ACCOUNTS = [...load<Cache>(PATHS.cache, CacheSchema).accounts];
 export const CONFIG: Config = makeIfIsnt<Config>(
   PATHS.config,
-  { locale: 'en', torPassword: '', torPort: 9, proxies: [] },
+  {
+    locale: 'en',
+    torPassword: '',
+    torPort: 9,
+    proxies: [],
+    nickname: 'telegram: @aminodorks',
+  },
   ConfigSchema,
 );
 export const LOCALHOST = '127.0.0.1';
+export const SEND_MESSAGE_DELAY = 1000;
 export const SCREEN = new Screen(CONFIG.locale);
