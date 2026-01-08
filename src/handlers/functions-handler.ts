@@ -11,10 +11,8 @@ import {
 import { Context } from '../schemas/context';
 import { display } from '../ui/screen';
 import { delay } from '../utils/helpers';
-import { batchPool, pool } from '../utils/tasks';
+import { pool } from '../utils/tasks';
 import { Rave } from 'ravejs';
-import { Account } from '../schemas/cache';
-import { CallbackArgs, FunctionCallback } from '../schemas/callback';
 import {
   changeProfileCallback,
   raidAllRoomsCallback,
@@ -22,6 +20,7 @@ import {
 } from '../utils/callbacks';
 import { readFileSync } from 'fs';
 import { Languages, Mesh, User } from 'ravejs/dist/schemas';
+import { Account } from '../schemas/cache';
 
 export class FunctionsHandler implements Handler {
   private __nickname?: string;
@@ -52,33 +51,26 @@ export class FunctionsHandler implements Handler {
     this.__contexts = [];
     SCREEN.displayLogo();
 
-    await batchPool<string, Account>(
-      this.__proxies,
+    await pool<Account>(
       ACCOUNTS,
-      MAX_BATCHES.contexts,
-      async (proxy: string, accounts: Account[]) => {
-        for (const account of accounts) {
-          const instance = new Rave();
-          try {
-            await instance.auth.authenticate(account.token, account.deviceId);
-          } catch {
-            display(SCREEN.locale.errors.contextCreationFailed, [
-              account.email,
-            ]);
-            continue;
-          }
+      async (account: Account) => {
+        const instance = new Rave();
+        await instance.auth.authenticate(account.token, account.deviceId);
 
-          this.__contexts.push({
-            proxy:
-              this.__proxies[Math.floor(Math.random() * this.__proxies.length)],
-            sockets: {},
-            instance,
-          });
-
-          display(SCREEN.locale.logs.contextCreated, [account.email]);
-        }
+        this.__contexts.push({
+          instance,
+          proxy:
+            this.__proxies[Math.floor(Math.random() * this.__proxies.length)],
+        });
       },
+      MAX_BATCHES.contexts,
     );
+
+    if (!this.__contexts.length) {
+      display(SCREEN.locale.errors.totalContextCreationFailed);
+      await delay(1);
+      return;
+    }
 
     this.__rave = this.__contexts[0].instance;
   };
@@ -106,13 +98,12 @@ export class FunctionsHandler implements Handler {
       },
       MAX_BATCHES.proxy,
     );
-  };
 
-  private __processTask = async (
-    callback: FunctionCallback,
-    args: CallbackArgs = {},
-  ) => {
-    await pool<Context>(this.__contexts, callback, MAX_BATCHES.callbacks, args);
+    if (!this.__proxies.length) {
+      display(SCREEN.locale.errors.totalProxyConnectionFailed);
+      await delay(1);
+      return;
+    }
   };
 
   private __getMeshes = async () => {
@@ -142,10 +133,15 @@ export class FunctionsHandler implements Handler {
     );
     this.__nickname = await buildInput(SCREEN.locale.enters.enterNickname);
 
-    await this.__processTask(changeProfileCallback, {
-      displayAvatar,
-      displayName: this.__nickname,
-    });
+    await pool<Context>(
+      this.__contexts,
+      changeProfileCallback,
+      MAX_BATCHES.callbacks,
+      {
+        displayAvatar,
+        displayName: this.__nickname,
+      },
+    );
   };
 
   private __raidAllRooms = async (meshes: Mesh[], message: string) => {
@@ -198,7 +194,14 @@ export class FunctionsHandler implements Handler {
       .map((user) => user.id);
 
     const executeTask = async () => {
-      await this.__processTask(sendFriendshipCallback, { userIds });
+      await pool<Context>(
+        this.__contexts,
+        sendFriendshipCallback,
+        MAX_BATCHES.callbacks,
+        {
+          userIds,
+        },
+      );
       setTimeout(executeTask, 1000);
     };
 

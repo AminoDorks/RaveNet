@@ -22,7 +22,10 @@
     "contextCreationFailed": "Не удалось создать контекст",
     "profileChangeFailed": "Не удалось изменить профиль",
     "meshJoinFailed": "Не удалось присоединиться к руме",
-    "friendshipSendFailed": "Не удалось отправить заявку в друзья"
+    "friendshipSendFailed": "Не удалось отправить заявку в друзья",
+    "totalProxyConnectionFailed": "Не удалось подключиться ко всем прокси",
+    "totalContextCreationFailed": "Не удалось создать все контексты",
+    "unknownError": "Неизвестная ошибка"
   },
   "logs": {
     "torConfigured": "Tor настроен успешно",

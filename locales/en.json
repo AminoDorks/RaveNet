@@ -22,7 +22,10 @@
     "proxyConnectionFailed": "Could not connect to proxy",
     "profileChangeFailed": "Could not change profile",
     "meshJoinFailed": "Could not join mesh",
-    "friendshipSendFailed": "Could not send friendship request"
+    "friendshipSendFailed": "Could not send friendship request",
+    "totalProxyConnectionFailed": "Could not connect to all proxies",
+    "totalContextCreationFailed": "Could not create all contexts",
+    "unknownError": "Unknown error"
   },
   "logs": {
     "torConfigured": "Tor configured successfully",
