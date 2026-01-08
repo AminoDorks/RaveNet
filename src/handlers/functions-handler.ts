@@ -18,7 +18,7 @@ import {
 } from '../ui/inquirer';
 import { Context } from '../schemas/context';
 import { display } from '../ui/screen';
-import { delay } from '../utils/helpers';
+import { delay, setTorPassword } from '../utils/helpers';
 import { pool } from '../utils/tasks';
 import { Rave } from 'ravejs';
 import {
@@ -63,7 +63,14 @@ export class FunctionsHandler implements Handler {
       ACCOUNTS,
       async (account: Account) => {
         const instance = new Rave();
-        await instance.auth.authenticate(account.token, account.deviceId);
+        try {
+          await instance.auth.authenticate(account.token, account.deviceId);
+          display(SCREEN.locale.logs.contextCreated, [account.token]);
+        } catch {
+          display(SCREEN.locale.errors.contextCreationFailed, [account.token]);
+          await delay(1);
+          return;
+        }
 
         this.__contexts.push({
           instance,
@@ -276,6 +283,10 @@ export class FunctionsHandler implements Handler {
   };
 
   async handle(): Promise<void> {
+    if (!CONFIG.torPassword) {
+      await setTorPassword();
+    }
+
     if (!this.__tor) {
       await this.__torSetup();
       await this.__proxySetup();

@@ -1,6 +1,7 @@
 import { CONFIG, PATHS, SCREEN } from '../constants';
 import { Handler } from '../interfaces/handler';
 import { buildInput, buildSelect } from '../ui/inquirer';
+import { setTorPassword } from '../utils/helpers';
 import { save } from '../utils/loaders';
 
 export class SettingsHandler implements Handler {
@@ -16,12 +17,7 @@ export class SettingsHandler implements Handler {
   };
 
   private __torPasswordCallback = async () => {
-    const password = await buildInput(SCREEN.locale.enters.enterTorPassword, {
-      defaultAnswer: CONFIG.torPassword,
-    });
-
-    CONFIG.torPassword = password;
-    save(PATHS.config, CONFIG);
+    await setTorPassword();
   };
 
   async handle(): Promise<void> {

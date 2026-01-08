@@ -62,3 +62,12 @@ export const configureTor = async () => {
 
 export const generateRandomString = () =>
   Math.random().toString(36).substring(2);
+
+export const setTorPassword = async () => {
+  const password = await buildInput(SCREEN.locale.enters.enterTorPassword, {
+    defaultAnswer: CONFIG.torPassword,
+  });
+
+  CONFIG.torPassword = password;
+  save(PATHS.config, CONFIG);
+};

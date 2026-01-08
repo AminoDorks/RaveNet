@@ -9,7 +9,7 @@ import { load, makeIfIsnt } from './utils/loaders';
 
 export const MAX_BATCHES = {
   proxy: 35,
-  contexts: 20,
+  contexts: 40,
   callbacks: 50,
 };
 
