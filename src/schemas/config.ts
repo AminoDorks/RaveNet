@@ -5,7 +5,7 @@ export const ConfigSchema = z.object({
   torPort: z.number(),
   torPassword: z.string(),
   proxies: z.array(z.string()),
-  nickname: z.string(),
+  customPath: z.string(),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;

@@ -3,16 +3,22 @@ import { existsSync, readFileSync } from 'fs';
 import { CONFIG, PATHS, SCREEN, TORRC_PATHS } from '../constants';
 import { display } from '../ui/screen';
 import { save } from './loaders';
+import { buildInput } from '../ui/inquirer';
 
 export const delay = async (seconds: number) =>
   new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 
-const findTorrc = (): string | undefined => {
+const findTorrc = (customPath?: string): string | undefined => {
   let torrcContent: string | undefined;
 
-  const paths =
-    process.platform == 'win32' ? TORRC_PATHS.win : TORRC_PATHS.unix;
+  const paths = customPath
+    ? [customPath]
+    : process.platform == 'win32'
+      ? TORRC_PATHS.win
+      : TORRC_PATHS.unix;
   const validPaths = paths.filter((path) => existsSync(path));
+  CONFIG.customPath = validPaths[0];
+  save(PATHS.config, CONFIG);
 
   try {
     torrcContent = readFileSync(validPaths[0], 'utf-8').toString();
@@ -33,12 +39,18 @@ const findTorControlPort = (content: string) => {
   return matches ? parseInt(matches[0].split(' ')[1]) : CONFIG.torPort;
 };
 
-export const configureTor = () => {
-  const torrc = findTorrc();
+export const configureTor = async () => {
+  let torrc;
+
+  if (CONFIG.customPath) {
+    torrc = findTorrc(CONFIG.customPath);
+  } else {
+    torrc = findTorrc();
+  }
 
   if (!torrc) {
     display(SCREEN.locale.errors.couldntFindTorrc);
-    return;
+    process.exit(1);
   }
 
   CONFIG.torPort = findTorControlPort(torrc);

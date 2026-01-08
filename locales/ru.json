@@ -11,7 +11,9 @@
     "enterAvatarPath": "Введите путь к аватарке:",
     "chooseMeshLocale": "Выберите локализацию рум:",
     "enterMeshAmount": "Введите количество рум:",
-    "enterLinks": "Введите ссылки (разделенные пробелом):"
+    "enterLinks": "Введите ссылки (разделенные пробелом):",
+    "enterTorPath": "Введите путь к torrc (например, C:/Tor/torrc):",
+    "enterMessage": "Введите сообщение для спама:"
   },
   "errors": {
     "couldntFindTorrc": "Не удалось найти файл torrc",

@@ -66,11 +66,10 @@ export const CONFIG: Config = makeIfIsnt<Config>(
     torPassword: '',
     torPort: 9,
     proxies: [],
-    nickname: 'tg aminodorks',
+    customPath: '',
   },
   ConfigSchema,
 );
-export const MESSAGE = 'tg aminodorks';
 export const LOCALHOST = '127.0.0.1';
 export const SEND_MESSAGE_DELAY = 1000;
 export const SCREEN = new Screen(CONFIG.locale);

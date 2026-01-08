@@ -1,13 +1,6 @@
 import { Tor } from 'tor-control-ts';
 
-import {
-  ACCOUNTS,
-  CONFIG,
-  LOCALHOST,
-  MAX_BATCHES,
-  MESSAGE,
-  SCREEN,
-} from '../constants';
+import { ACCOUNTS, CONFIG, LOCALHOST, MAX_BATCHES, SCREEN } from '../constants';
 import { Handler } from '../interfaces/handler';
 import {
   buildInput,
@@ -31,6 +24,7 @@ import { readFileSync } from 'fs';
 import { Languages, Mesh, User } from 'ravejs/dist/schemas';
 
 export class FunctionsHandler implements Handler {
+  private __nickname?: string;
   private __tor?: Tor;
   private __rave?: Rave;
   private __proxies: string[] = [];
@@ -146,14 +140,15 @@ export class FunctionsHandler implements Handler {
         }),
       ),
     );
+    this.__nickname = await buildInput(SCREEN.locale.enters.enterNickname);
 
     await this.__processTask(changeProfileCallback, {
       displayAvatar,
-      displayName: CONFIG.nickname,
+      displayName: this.__nickname,
     });
   };
 
-  private __raidAllRooms = async (meshes: Mesh[]) => {
+  private __raidAllRooms = async (meshes: Mesh[], message: string) => {
     const contextBatches: Context[][] = [];
 
     for (let i = 0; i < meshes.length; i++) {
@@ -184,7 +179,7 @@ export class FunctionsHandler implements Handler {
             try {
               await raidAllRoomsCallback(task.context, {
                 meshId: task.meshId,
-                message: MESSAGE,
+                message,
               });
             } catch {}
           },
@@ -199,7 +194,7 @@ export class FunctionsHandler implements Handler {
 
   private __raidFriends = async (rawUsers: User[]) => {
     const userIds = rawUsers
-      .filter((user) => user.name != CONFIG.nickname)
+      .filter((user) => user.name != this.__nickname)
       .map((user) => user.id);
 
     const executeTask = async () => {
@@ -212,15 +207,20 @@ export class FunctionsHandler implements Handler {
 
   private __globalDestruction = async () => {
     const meshesData = await this.__getMeshes();
+    const message = await buildInput(SCREEN.locale.enters.enterMessage);
 
     await Promise.all([
-      this.__raidAllRooms(meshesData.flatMap((meshData) => meshData.mesh)),
+      this.__raidAllRooms(
+        meshesData.flatMap((meshData) => meshData.mesh),
+        message,
+      ),
       this.__raidFriends(meshesData.flatMap((meshData) => meshData.users)),
     ]);
   };
 
   private __raidRoomsByLink = async (links: string[]) => {
     const meshesData: { mesh: Mesh; users: User[] }[] = [];
+    const message = await buildInput(SCREEN.locale.enters.enterMessage);
 
     await Promise.all(
       links.map(async (link) => {
@@ -232,7 +232,10 @@ export class FunctionsHandler implements Handler {
     );
 
     await Promise.all([
-      this.__raidAllRooms(meshesData.flatMap((meshData) => meshData.mesh)),
+      this.__raidAllRooms(
+        meshesData.flatMap((meshData) => meshData.mesh),
+        message,
+      ),
       this.__raidFriends(meshesData.flatMap((meshData) => meshData.users)),
     ]);
   };
@@ -269,8 +272,11 @@ export class FunctionsHandler implements Handler {
       }
       case 'raidAllRooms': {
         const meshesData = await this.__getMeshes();
+        const message = await buildInput(SCREEN.locale.enters.enterMessage);
+
         await this.__raidAllRooms(
           meshesData.flatMap((meshData) => meshData.mesh),
+          message,
         );
         break;
       }

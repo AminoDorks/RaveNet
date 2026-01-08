@@ -11,7 +11,9 @@
     "enterAvatarPath": "Enter avatar path:",
     "chooseMeshLocale": "Choose meshes locale:",
     "enterMeshAmount": "Enter meshes amount:",
-    "enterLinks": "Enter links (separated by space):"
+    "enterLinks": "Enter links (separated by space):",
+    "enterTorPath": "Enter Tor path to torrc(like C:/Tor/torrc):",
+    "enterMessage": "Enter message for spam:"
   },
   "errors": {
     "couldntFindTorrc": "Could not find torrc file",
