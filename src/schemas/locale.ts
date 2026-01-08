@@ -15,6 +15,7 @@ export const LocaleSchema = z.object({
     enterAvatarPath: z.string(),
     chooseMeshLocale: z.string(),
     enterMeshAmount: z.string(),
+    enterLinks: z.string(),
   }),
   errors: z.object({
     couldntFindTorrc: z.string(),

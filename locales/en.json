@@ -10,7 +10,8 @@
     "enterNickname": "Enter nickname:",
     "enterAvatarPath": "Enter avatar path:",
     "chooseMeshLocale": "Choose meshes locale:",
-    "enterMeshAmount": "Enter meshes amount:"
+    "enterMeshAmount": "Enter meshes amount:",
+    "enterLinks": "Enter links (separated by space):"
   },
   "errors": {
     "couldntFindTorrc": "Could not find torrc file",
@@ -48,6 +49,11 @@
       }
     ],
     "functions": [
+      {
+        "name": "Raid Rooms by Link",
+        "description": "Raid rooms by link",
+        "value": "raidRoomsByLink"
+      },
       {
         "name": "Raid All Rooms",
         "description": "Raid all rooms",

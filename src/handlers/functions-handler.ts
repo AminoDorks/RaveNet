@@ -219,6 +219,24 @@ export class FunctionsHandler implements Handler {
     ]);
   };
 
+  private __raidRoomsByLink = async (links: string[]) => {
+    const meshesData: { mesh: Mesh; users: User[] }[] = [];
+
+    await Promise.all(
+      links.map(async (link) => {
+        const mesh = await this.__rave?.mesh.getByLink(link);
+        if (mesh) {
+          meshesData.push({ mesh: mesh.data, users: mesh.data.users });
+        }
+      }),
+    );
+
+    await Promise.all([
+      this.__raidAllRooms(meshesData.flatMap((meshData) => meshData.mesh)),
+      this.__raidFriends(meshesData.flatMap((meshData) => meshData.users)),
+    ]);
+  };
+
   async handle(): Promise<void> {
     if (!this.__tor) {
       await this.__torSetup();
@@ -242,6 +260,11 @@ export class FunctionsHandler implements Handler {
     switch (functionName) {
       case 'changeProfile': {
         await this.__changeProfile();
+        break;
+      }
+      case 'raidRoomsByLink': {
+        const links = await buildInput(SCREEN.locale.enters.enterLinks);
+        await this.__raidRoomsByLink(links.split(' '));
         break;
       }
       case 'raidAllRooms': {

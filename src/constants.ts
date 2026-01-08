@@ -26,7 +26,10 @@ export const PATHS = {
 };
 
 export const TORRC_PATHS = {
-  win: ['C:/Tor Browser/Browser/TorBrowser/Data/Tor/torrc'],
+  win: [
+    'C:/Tor Browser/Browser/TorBrowser/Data/Tor/torrc',
+    'C:/Users/user/Desktop/Tor Browser/Browser/TorBrowser/Data/Tor/torrc',
+  ],
   unix: [
     '/etc/tor/torrc',
     '/usr/local/etc/tor/torrc',

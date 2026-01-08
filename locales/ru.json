@@ -10,7 +10,8 @@
     "enterNickname": "Введите никнейм:",
     "enterAvatarPath": "Введите путь к аватарке:",
     "chooseMeshLocale": "Выберите локализацию рум:",
-    "enterMeshAmount": "Введите количество рум:"
+    "enterMeshAmount": "Введите количество рум:",
+    "enterLinks": "Введите ссылки (разделенные пробелом):"
   },
   "errors": {
     "couldntFindTorrc": "Не удалось найти файл torrc",
@@ -48,6 +49,11 @@
       }
     ],
     "functions": [
+      {
+        "name": "Рейд рум по ссылке",
+        "description": "Рейдит румы по ссылке",
+        "value": "raidRoomsByLink"
+      },
       {
         "name": "Рейд всех рум",
         "description": "Рейдит все комнаты сообщениями",
