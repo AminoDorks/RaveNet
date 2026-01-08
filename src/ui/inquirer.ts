@@ -43,3 +43,13 @@ export const buildSelect = async (
     theme: CUSTOM_THEME,
   });
 };
+
+export const buildCheckbox = async (content: string, choices: Choice[]) => {
+  return await (
+    await getPrompts()
+  ).checkbox({
+    message: content,
+    choices: choices,
+    theme: CUSTOM_THEME,
+  });
+};

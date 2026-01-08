@@ -1,8 +1,16 @@
 import { Tor } from 'tor-control-ts';
 
-import { ACCOUNTS, CONFIG, LOCALHOST, MAX_BATCHES, SCREEN } from '../constants';
+import {
+  ACCOUNTS,
+  CONFIG,
+  LOCALHOST,
+  MAX_BATCHES,
+  SCRAP_METHODS,
+  SCREEN,
+} from '../constants';
 import { Handler } from '../interfaces/handler';
 import {
+  buildCheckbox,
   buildInput,
   buildSelect,
   fileFilter,
@@ -107,7 +115,8 @@ export class FunctionsHandler implements Handler {
   };
 
   private __getMeshes = async () => {
-    const meshes = await this.__rave!.mesh.getMany({
+    let chosenMeshes: { mesh: Mesh; users: User[] }[] = [];
+    const rawMeshes = await this.__rave!.mesh.getMany({
       limit: Number(
         await buildInput(SCREEN.locale.enters.enterMeshAmount, {
           filter: numericFilter,
@@ -120,7 +129,30 @@ export class FunctionsHandler implements Handler {
       isPublic: true,
     });
 
-    return meshes.data;
+    const scrapMethod = await buildSelect(
+      SCREEN.locale.enters.chooseMeshScraping,
+      SCREEN.locale.choices.methods,
+    );
+
+    if (scrapMethod == SCRAP_METHODS.checkbox) {
+      const selectedMeshes = await buildCheckbox(
+        SCREEN.locale.enters.chooseMeshes,
+        rawMeshes.data.map((meshData) => ({
+          name: meshData.mesh.videoTitle,
+          description: SCREEN.locale.logs.usersQuantity.replace(
+            '%s',
+            meshData.users.length.toString(),
+          ),
+          value: meshData.mesh.id,
+        })),
+      );
+
+      chosenMeshes = rawMeshes.data.filter((meshData) =>
+        selectedMeshes.includes(meshData.mesh.id),
+      );
+    }
+
+    return chosenMeshes || rawMeshes.data;
   };
 
   private __changeProfile = async () => {

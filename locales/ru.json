@@ -13,7 +13,9 @@
     "enterMeshAmount": "Введите количество рум:",
     "enterLinks": "Введите ссылки (разделенные пробелом):",
     "enterTorPath": "Введите путь к torrc (например, C:/Tor/torrc):",
-    "enterMessage": "Введите сообщение для спама:"
+    "enterMessage": "Введите сообщение для спама:",
+    "chooseMeshScraping": "Выберите метод скрапинга рум:",
+    "chooseMeshes": "Выберите румы:"
   },
   "errors": {
     "couldntFindTorrc": "Не удалось найти файл torrc",
@@ -38,9 +40,22 @@
     "meshJoined": "Присоединение к руму выполнено успешно",
     "messageSent": "Сообщение отправлено успешно",
     "friendshipSent": "Заявка в друзья отправлена успешно",
-    "connectedToMesh": "Подключен к руме"
+    "connectedToMesh": "Подключен к руме",
+    "usersQuantity": "Количество пользователей: %s"
   },
   "choices": {
+    "methods": [
+      {
+        "name": "Автоматический",
+        "description": "Автоматический поиск румов на основе запросов",
+        "value": "automatic"
+      },
+      {
+        "name": "Выбор",
+        "description": "Вы можете выбрать румы сами",
+        "value": "choosing"
+      }
+    ],
     "main": [
       {
         "name": "Функции",

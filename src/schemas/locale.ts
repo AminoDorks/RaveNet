@@ -18,6 +18,8 @@ export const LocaleSchema = z.object({
     enterLinks: z.string(),
     enterTorPath: z.string(),
     enterMessage: z.string(),
+    chooseMeshScraping: z.string(),
+    chooseMeshes: z.string(),
   }),
   errors: z.object({
     couldntFindTorrc: z.string(),
@@ -43,8 +45,10 @@ export const LocaleSchema = z.object({
     messageSent: z.string(),
     friendshipSent: z.string(),
     connectedToMesh: z.string(),
+    usersQuantity: z.string(),
   }),
   choices: z.object({
+    methods: z.array(ChoiceSchema),
     main: z.array(ChoiceSchema),
     functions: z.array(ChoiceSchema),
     settings: z.array(ChoiceSchema),

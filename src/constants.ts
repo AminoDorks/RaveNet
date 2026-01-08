@@ -13,6 +13,11 @@ export const MAX_BATCHES = {
   callbacks: 50,
 };
 
+export const SCRAP_METHODS = {
+  checkbox: 'choosing',
+  automatic: 'automatic',
+};
+
 export const COLORS = {
   red: '\x1b[31m',
   reset: '\x1b[0m',
