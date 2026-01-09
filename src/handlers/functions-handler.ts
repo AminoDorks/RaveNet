@@ -23,6 +23,7 @@ import { pool } from '../utils/tasks';
 import { Rave } from 'ravejs';
 import {
   changeProfileCallback,
+  changeRandomNicknameCallback,
   raidAllRoomsCallback,
   sendFriendshipCallback,
 } from '../utils/callbacks';
@@ -188,6 +189,14 @@ export class FunctionsHandler implements Handler {
     );
   };
 
+  private __changeRandomNickname = async () => {
+    await pool<Context>(
+      this.__contexts,
+      changeRandomNicknameCallback,
+      MAX_BATCHES.callbacks,
+    );
+  };
+
   private __raidAllRooms = async (meshes: Mesh[], message: string) => {
     const contextBatches: Context[][] = [];
 
@@ -310,6 +319,10 @@ export class FunctionsHandler implements Handler {
     switch (functionName) {
       case 'changeProfile': {
         await this.__changeProfile();
+        break;
+      }
+      case 'changeRandomNicknames': {
+        await this.__changeRandomNickname();
         break;
       }
       case 'raidRoomsByLink': {

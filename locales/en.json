@@ -96,6 +96,11 @@
         "value": "changeProfile"
       },
       {
+        "name": "Change nicknames to random",
+        "description": "Change all accounts nicknames to random",
+        "value": "changeRandomNicknames"
+      },
+      {
         "name": "Update Proxy",
         "description": "Update proxy for botnet",
         "value": "updateProxy"

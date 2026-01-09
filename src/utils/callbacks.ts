@@ -58,3 +58,16 @@ export const sendFriendshipCallback = async (
     ]);
   }
 };
+
+export const changeRandomNicknameCallback = async (
+  context: Context,
+  _: CallbackArgs,
+) => {
+  context.instance.offProxy();
+  try {
+    await context.instance.user.edit({ displayName: generateRandomString() });
+    display(SCREEN.locale.logs.profileChanged, [context.instance.token]);
+  } catch {
+    display(SCREEN.locale.errors.profileChangeFailed, [context.instance.token]);
+  }
+};

@@ -96,6 +96,11 @@
         "value": "changeProfile"
       },
       {
+        "name": "Изменить никнеймы на случайные",
+        "description": "Изменить никнеймы всех аккаунтов на случайные",
+        "value": "changeRandomNicknames"
+      },
+      {
         "name": "Обновить прокси",
         "description": "Обновить прокси для ботнета",
         "value": "updateProxy"
