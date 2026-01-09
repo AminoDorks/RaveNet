@@ -122,7 +122,6 @@ export class FunctionsHandler implements Handler {
   };
 
   private __getMeshes = async () => {
-    let chosenMeshes: { mesh: Mesh; users: User[] }[] = [];
     const rawMeshes = await this.__rave!.mesh.getMany({
       limit: Number(
         await buildInput(SCREEN.locale.enters.enterMeshAmount, {
@@ -154,12 +153,12 @@ export class FunctionsHandler implements Handler {
         })),
       );
 
-      chosenMeshes = rawMeshes.data.filter((meshData) =>
+      return rawMeshes.data.filter((meshData) =>
         selectedMeshes.includes(meshData.mesh.id),
       );
+    } else {
+      return rawMeshes.data;
     }
-
-    return chosenMeshes || rawMeshes.data;
   };
 
   private __changeProfile = async () => {
@@ -232,19 +231,15 @@ export class FunctionsHandler implements Handler {
       .filter((user) => user.name != this.__nickname)
       .map((user) => user.id);
 
-    const executeTask = async () => {
+    while (true) {
       await pool<Context>(
         this.__contexts,
         sendFriendshipCallback,
         MAX_BATCHES.callbacks,
-        {
-          userIds,
-        },
+        { userIds },
       );
-      setTimeout(executeTask, 1000);
-    };
-
-    await executeTask();
+      await delay(1);
+    }
   };
 
   private __globalDestruction = async () => {
