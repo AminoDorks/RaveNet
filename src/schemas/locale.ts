@@ -32,6 +32,7 @@ export const LocaleSchema = z.object({
     totalProxyConnectionFailed: z.string(),
     totalContextCreationFailed: z.string(),
     unknownError: z.string(),
+    tooManyMeshes: z.string(),
   }),
   logs: z.object({
     torConfigured: z.string(),

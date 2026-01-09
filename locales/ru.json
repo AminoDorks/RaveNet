@@ -27,7 +27,8 @@
     "friendshipSendFailed": "Не удалось отправить заявку в друзья",
     "totalProxyConnectionFailed": "Не удалось подключиться ко всем прокси",
     "totalContextCreationFailed": "Не удалось создать все контексты",
-    "unknownError": "Неизвестная ошибка"
+    "unknownError": "Неизвестная ошибка",
+    "tooManyMeshes": "Слишком много рум выбрано"
   },
   "logs": {
     "torConfigured": "Tor настроен успешно",

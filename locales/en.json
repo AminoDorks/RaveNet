@@ -27,7 +27,8 @@
     "friendshipSendFailed": "Could not send friendship request",
     "totalProxyConnectionFailed": "Could not connect to all proxies",
     "totalContextCreationFailed": "Could not create all contexts",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "tooManyMeshes": "Too many meshes selected"
   },
   "logs": {
     "torConfigured": "Tor configured successfully",

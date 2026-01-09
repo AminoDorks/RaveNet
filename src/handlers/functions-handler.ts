@@ -121,7 +121,7 @@ export class FunctionsHandler implements Handler {
     }
   };
 
-  private __getMeshes = async () => {
+  private __getMeshes = async (): Promise<{ mesh: Mesh; users: User[] }[]> => {
     const rawMeshes = await this.__rave!.mesh.getMany({
       limit: Number(
         await buildInput(SCREEN.locale.enters.enterMeshAmount, {
@@ -134,6 +134,12 @@ export class FunctionsHandler implements Handler {
       )) as Languages,
       isPublic: true,
     });
+
+    if (!rawMeshes.data) {
+      display(SCREEN.locale.errors.tooManyMeshes);
+      await delay(1);
+      return await this.__getMeshes();
+    }
 
     const scrapMethod = await buildSelect(
       SCREEN.locale.enters.chooseMeshScraping,
