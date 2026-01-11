@@ -90,6 +90,11 @@
         "value": "raidFriends"
       },
       {
+        "name": "Join rooms",
+        "description": "Bots join rooms",
+        "value": "joinRooms"
+      },
+      {
         "name": "Change profile",
         "description": "Change all accounts profile",
         "value": "changeProfile"

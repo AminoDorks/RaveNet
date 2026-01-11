@@ -15,10 +15,12 @@ import { MeshHandler } from './mesh-handler';
 import { MeshesTotal } from '../schemas/mesh-data';
 import {
   changeProfileCallback,
+  joinRoomCallback,
   raidRoomCallback,
   sendFriendshipCallback,
   setRandomNicknameCallback,
 } from '../utils/callbacks';
+import { CallbackArgs, FunctionCallback } from '../schemas/callback';
 
 export class FunctionsHandler implements Handler {
   private __tor?: Tor;
@@ -137,10 +139,13 @@ export class FunctionsHandler implements Handler {
     }
   };
 
-  private __raidAllRooms = async (meshIds: string[], message: string) => {
+  private __roomsPools = async (
+    callback: FunctionCallback,
+    meshIds: string[],
+    args: CallbackArgs = {},
+  ) => {
     const contextBatches = contextsToBatches(this.__contexts, meshIds);
     const promises: Promise<void>[] = [];
-    console.log(contextBatches[0].length);
 
     for (let i = 0; i < meshIds.length; i++) {
       const worker = async () => {
@@ -150,9 +155,9 @@ export class FunctionsHandler implements Handler {
             meshId: meshIds[i],
           })),
           async (task) => {
-            await raidRoomCallback(task.context, {
+            await callback(task.context, {
               meshId: task.meshId,
-              message,
+              ...args,
             });
           },
           MAX_BATCHES.callbacks,
@@ -162,6 +167,14 @@ export class FunctionsHandler implements Handler {
     }
 
     await Promise.all(promises);
+  };
+
+  private __raidAllRooms = async (meshIds: string[], message: string) => {
+    await this.__roomsPools(raidRoomCallback, meshIds, { message });
+  };
+
+  private __joinRooms = async (meshIds: string[]) => {
+    await this.__roomsPools(joinRoomCallback, meshIds);
   };
 
   private __exterminatus = async () => {
@@ -224,6 +237,11 @@ export class FunctionsHandler implements Handler {
           await this.__totalToUsers(await this.__handleMeshes()),
         );
         break;
+      }
+      case 'joinRooms': {
+        await this.__joinRooms(
+          (await this.__handleMeshes()).meshes.map((mesh) => mesh.id),
+        );
       }
       case 'changeProfile': {
         await this.__changeProfile();

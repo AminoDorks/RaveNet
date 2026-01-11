@@ -1,4 +1,4 @@
-import { MAX_BATCHES, SCREEN } from '../constants';
+import { MAX_BATCHES, MESSAGES_INTERVAL, SCREEN } from '../constants';
 import { CallbackArgs } from '../schemas/callback';
 import { Context } from '../schemas/context';
 import { display } from '../ui/screen';
@@ -35,12 +35,25 @@ export const raidRoomCallback = async (
           `${generateRandomString()} ${args.message} ${generateRandomString()}`,
         );
         display(SCREEN.locale.logs.messageSent, [context.instance.token]);
-      }, 2000);
+      }, MESSAGES_INTERVAL);
     });
 
-    meshSocket.onerror(async () => {
-      console.log('ашибка');
+    meshSocket.onerror(async () => {});
+  } catch {}
+};
+
+export const joinRoomCallback = async (
+  context: Context,
+  args: CallbackArgs,
+) => {
+  context.instance.proxy = context.proxy;
+  try {
+    const meshSocket = await context.instance.mesh.join(args.meshId);
+    meshSocket.onopen(() => {
+      display(SCREEN.locale.logs.connectedToMesh, [context.instance.token]);
     });
+
+    meshSocket.onerror(async () => {});
   } catch {}
 };
 

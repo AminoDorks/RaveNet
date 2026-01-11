@@ -90,6 +90,11 @@
         "value": "raidFriends"
       },
       {
+        "name": "Присоединиться к румам",
+        "description": "Боты входят в румы",
+        "value": "joinRooms"
+      },
+      {
         "name": "Изменить профиль",
         "description": "Изменяет профиль всех аккаунтов",
         "value": "changeProfile"
