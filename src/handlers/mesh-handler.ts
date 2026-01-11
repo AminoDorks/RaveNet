@@ -27,10 +27,6 @@ export class MeshHandler implements Handler {
           filter: numericFilter,
         }),
       ),
-      language: (await buildSelect(
-        SCREEN.locale.enters.chooseMeshLocale,
-        SCREEN.locale.choices.locales,
-      )) as Languages,
       isPublic: true,
     });
 

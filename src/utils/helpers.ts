@@ -4,6 +4,7 @@ import { CONFIG, PATHS, SCREEN, TORRC_PATHS } from '../constants';
 import { display } from '../ui/screen';
 import { save } from './loaders';
 import { buildInput } from '../ui/inquirer';
+import { Context } from '../schemas/context';
 
 export const delay = async (seconds: number) =>
   new Promise((resolve) => setTimeout(resolve, seconds * 1000));
@@ -75,4 +76,20 @@ export const setTorPassword = async () => {
 
   CONFIG.torPassword = password;
   save(PATHS.config, CONFIG);
+};
+
+export const contextsToBatches = (
+  contexts: Context[],
+  meshIds: string[],
+): Context[][] => {
+  const contextBatches: Context[][] = [];
+
+  for (let i = 0; i < meshIds.length; i++) {
+    const accountsPerMesh = Math.floor(contexts.length / meshIds.length);
+    const startIndex = i * accountsPerMesh;
+    const batch = contexts.slice(startIndex, startIndex + accountsPerMesh);
+    contextBatches.push(batch);
+  }
+
+  return contextBatches;
 };

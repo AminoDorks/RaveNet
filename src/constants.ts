@@ -11,6 +11,7 @@ export const MAX_BATCHES = {
   proxy: 35,
   contexts: 40,
   callbacks: 50,
+  batchPool: 20,
 };
 
 export const COLORS = {

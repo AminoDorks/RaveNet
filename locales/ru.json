@@ -9,7 +9,6 @@
     "chooseFunction": "Выберите функцию:",
     "enterNickname": "Введите никнейм:",
     "enterAvatarPath": "Введите путь к аватарке:",
-    "chooseMeshLocale": "Выберите локализацию рум:",
     "enterMeshAmount": "Введите количество рум:",
     "enterLinks": "Введите ссылки (разделенные пробелом):",
     "enterTorPath": "Введите путь к torrc (например, C:/Tor/torrc):",
@@ -128,33 +127,6 @@
         "name": "Русский",
         "description": "Русский язык",
         "value": "ru"
-      }
-    ],
-    "locales": [
-      {
-        "name": "Английский",
-        "description": "Английский язык",
-        "value": "en"
-      },
-      {
-        "name": "Русский",
-        "description": "Русский язык",
-        "value": "ru"
-      },
-      {
-        "name": "Арабский",
-        "description": "Арабский язык",
-        "value": "ar"
-      },
-      {
-        "name": "Испанский",
-        "description": "Испанский язык",
-        "value": "es"
-      },
-      {
-        "name": "Французский",
-        "description": "Французский язык",
-        "value": "fr"
       }
     ]
   }

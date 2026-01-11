@@ -23,3 +23,27 @@ export const pool = async <T>(
 
   await Promise.all(promises);
 };
+
+export const poolBatch = async <T, U>(
+  firstArray: T[],
+  secondArray: U[],
+  batchSize: number,
+  processor: (firstArray: T, secondArray: U[]) => Promise<void>,
+): Promise<void> => {
+  const promises = [];
+
+  for (let i = 0; i < firstArray.length; i++) {
+    const start = i * batchSize;
+    const end = start + batchSize;
+
+    if (start >= secondArray.length) break;
+
+    const worker = async () => {
+      const batch = secondArray.slice(start, end);
+      await processor(firstArray[i], batch);
+    };
+    promises.push(worker());
+  }
+
+  await Promise.all(promises);
+};

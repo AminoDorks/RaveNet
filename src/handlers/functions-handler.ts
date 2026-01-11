@@ -6,8 +6,8 @@ import { Handler } from '../interfaces/handler';
 import { buildInput, buildSelect, fileFilter } from '../ui/inquirer';
 import { Context } from '../schemas/context';
 import { display } from '../ui/screen';
-import { delay, setTorPassword } from '../utils/helpers';
-import { pool } from '../utils/tasks';
+import { contextsToBatches, delay, setTorPassword } from '../utils/helpers';
+import { pool, poolBatch } from '../utils/tasks';
 import { Rave } from 'ravejs';
 import { Account } from '../schemas/cache';
 import { poolProxies } from '../utils/pools';
@@ -61,26 +61,30 @@ export class FunctionsHandler implements Handler {
     this.__contexts = [];
     SCREEN.displayLogo();
 
-    await pool<Account>(
+    await poolBatch(
+      this.__proxies,
       ACCOUNTS,
-      async (account: Account) => {
-        const instance = new Rave();
-        try {
-          await instance.auth.authenticate(account.token, account.deviceId);
-          display(SCREEN.locale.logs.contextCreated, [account.token]);
-        } catch {
-          display(SCREEN.locale.errors.contextCreationFailed, [account.token]);
-          await delay(1);
-          return;
-        }
+      MAX_BATCHES.accounts,
+      async (proxy: string, accounts: Account[]) => {
+        for (const account of accounts) {
+          const instance = new Rave();
+          try {
+            await instance.auth.authenticate(account.token, account.deviceId);
+            display(SCREEN.locale.logs.contextCreated, [account.token]);
+          } catch {
+            display(SCREEN.locale.errors.contextCreationFailed, [
+              account.token,
+            ]);
+            await delay(1);
+            return;
+          }
 
-        this.__contexts.push({
-          instance,
-          proxy:
-            this.__proxies[Math.floor(Math.random() * this.__proxies.length)],
-        });
+          this.__contexts.push({
+            instance,
+            proxy,
+          });
+        }
       },
-      MAX_BATCHES.contexts,
     );
 
     if (!this.__contexts.length) {
@@ -134,37 +138,29 @@ export class FunctionsHandler implements Handler {
   };
 
   private __raidAllRooms = async (meshIds: string[], message: string) => {
-    const contextBatches: Context[][] = [];
-
-    for (let i = 0; i < meshIds.length; i++) {
-      const accountsPerMesh = Math.floor(
-        this.__contexts.length / meshIds.length,
-      );
-      const startIndex = i * accountsPerMesh;
-      const batch = this.__contexts.slice(
-        startIndex,
-        startIndex + accountsPerMesh,
-      );
-      contextBatches.push(batch);
-    }
-
+    const contextBatches = contextsToBatches(this.__contexts, meshIds);
     const promises: Promise<void>[] = [];
+    console.log(contextBatches[0].length);
 
     for (let i = 0; i < meshIds.length; i++) {
-      promises.push(
-        (async () => {
-          await pool<Context>(
-            contextBatches[i],
-            raidRoomCallback,
-            MAX_BATCHES.callbacks,
-            {
-              meshId: meshIds[i],
+      const worker = async () => {
+        await pool(
+          contextBatches[i].map((context) => ({
+            context,
+            meshId: meshIds[i],
+          })),
+          async (task) => {
+            await raidRoomCallback(task.context, {
+              meshId: task.meshId,
               message,
-            },
-          );
-        })(),
-      );
+            });
+          },
+          MAX_BATCHES.callbacks,
+        );
+      };
+      promises.push(worker());
     }
+
     await Promise.all(promises);
   };
 

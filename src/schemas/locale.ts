@@ -13,7 +13,6 @@ export const LocaleSchema = z.object({
     chooseFunction: z.string(),
     enterNickname: z.string(),
     enterAvatarPath: z.string(),
-    chooseMeshLocale: z.string(),
     enterMeshAmount: z.string(),
     enterLinks: z.string(),
     enterTorPath: z.string(),
@@ -54,7 +53,6 @@ export const LocaleSchema = z.object({
     functions: z.array(ChoiceSchema),
     settings: z.array(ChoiceSchema),
     languages: z.array(ChoiceSchema),
-    locales: z.array(ChoiceSchema),
   }),
 });
 

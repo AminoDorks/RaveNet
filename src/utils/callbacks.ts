@@ -35,10 +35,12 @@ export const raidRoomCallback = async (
           `${generateRandomString()} ${args.message} ${generateRandomString()}`,
         );
         display(SCREEN.locale.logs.messageSent, [context.instance.token]);
-      }, args.interval);
+      }, 2000);
     });
 
-    meshSocket.onerror(async () => {});
+    meshSocket.onerror(async () => {
+      console.log('ашибка');
+    });
   } catch {}
 };
 
@@ -46,21 +48,27 @@ export const sendFriendshipCallback = async (
   context: Context,
   args: CallbackArgs,
 ) => {
-  try {
-    context.instance.offProxy();
-    await pool<number>(
-      args.userIds,
-      async (userId: number) => {
+  context.instance.offProxy();
+  await pool<number>(
+    args.userIds,
+    async (userId: number) => {
+      try {
+        await context.instance.user.deleteFriendship(userId);
+      } catch {}
+      try {
+        await context.instance.user.deleteFriend(userId);
+      } catch {}
+      try {
         await context.instance.user.sendFriendship(userId);
-        display(SCREEN.locale.logs.friendshipSent, [context.instance.token]);
-      },
-      MAX_BATCHES.callbacks,
-    );
-  } catch {
-    display(SCREEN.locale.errors.friendshipSendFailed, [
-      context.instance.token,
-    ]);
-  }
+      } catch {
+        display(SCREEN.locale.errors.friendshipSendFailed, [
+          context.instance.token,
+        ]);
+      }
+      display(SCREEN.locale.logs.friendshipSent, [context.instance.token]);
+    },
+    MAX_BATCHES.callbacks,
+  );
 };
 
 export const setRandomNicknameCallback = async (

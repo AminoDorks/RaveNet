@@ -9,7 +9,6 @@
     "chooseFunction": "Choose function:",
     "enterNickname": "Enter nickname:",
     "enterAvatarPath": "Enter avatar path:",
-    "chooseMeshLocale": "Choose meshes locale:",
     "enterMeshAmount": "Enter meshes amount:",
     "enterLinks": "Enter links (separated by space):",
     "enterTorPath": "Enter Tor path to torrc(like C:/Tor/torrc):",
@@ -128,33 +127,6 @@
         "name": "Russian",
         "description": "Russian language",
         "value": "ru"
-      }
-    ],
-    "locales": [
-      {
-        "name": "English",
-        "description": "English language",
-        "value": "en"
-      },
-      {
-        "name": "Russian",
-        "description": "Russian language",
-        "value": "ru"
-      },
-      {
-        "name": "Arabic",
-        "description": "Arabic language",
-        "value": "ar"
-      },
-      {
-        "name": "Spanish",
-        "description": "Spanish language",
-        "value": "es"
-      },
-      {
-        "name": "French",
-        "description": "French language",
-        "value": "fr"
       }
     ]
   }
