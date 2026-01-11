@@ -55,6 +55,11 @@
         "name": "Choosing",
         "description": "You can select the meshes",
         "value": "choosing"
+      },
+      {
+        "name": "By links",
+        "description": "You can interact with rooms through links",
+        "value": "links"
       }
     ],
     "main": [
@@ -71,24 +76,19 @@
     ],
     "functions": [
       {
-        "name": "Raid Rooms by Link",
-        "description": "Raid rooms by link",
-        "value": "raidRoomsByLink"
+        "name": "☠ ᴇxᴛᴇʀᴍɪɴᴀᴛᴜs ☠",
+        "description": "Raid all rooms + raid friends + random nicknames",
+        "value": "exterminatus"
       },
       {
-        "name": "Raid All Rooms",
+        "name": "Raid all rooms",
         "description": "Raid all rooms",
         "value": "raidAllRooms"
       },
       {
-        "name": "Raid Friends",
+        "name": "Raid friends",
         "description": "Raid all users with friend requests",
         "value": "raidFriends"
-      },
-      {
-        "name": "Global Destruction",
-        "description": "Raid all rooms + raid all users with friend requests",
-        "value": "globalDestruction"
       },
       {
         "name": "Change profile",
@@ -96,14 +96,9 @@
         "value": "changeProfile"
       },
       {
-        "name": "Change nicknames to random",
-        "description": "Change all accounts nicknames to random",
-        "value": "changeRandomNicknames"
-      },
-      {
-        "name": "Update Proxy",
-        "description": "Update proxy for botnet",
-        "value": "updateProxy"
+        "name": "Update proxies",
+        "description": "Update proxies for botnet",
+        "value": "updateProxies"
       }
     ],
     "settings": [

@@ -1,42 +1,40 @@
 import { Tor } from 'tor-control-ts';
+import { readFileSync } from 'fs';
 
-import {
-  ACCOUNTS,
-  CONFIG,
-  LOCALHOST,
-  MAX_BATCHES,
-  SCRAP_METHODS,
-  SCREEN,
-} from '../constants';
+import { ACCOUNTS, CONFIG, LOCALHOST, MAX_BATCHES, SCREEN } from '../constants';
 import { Handler } from '../interfaces/handler';
-import {
-  buildCheckbox,
-  buildInput,
-  buildSelect,
-  fileFilter,
-  numericFilter,
-} from '../ui/inquirer';
+import { buildInput, buildSelect, fileFilter } from '../ui/inquirer';
 import { Context } from '../schemas/context';
 import { display } from '../ui/screen';
 import { delay, setTorPassword } from '../utils/helpers';
 import { pool } from '../utils/tasks';
 import { Rave } from 'ravejs';
+import { Account } from '../schemas/cache';
+import { poolProxies } from '../utils/pools';
+import { MeshHandler } from './mesh-handler';
+import { MeshesTotal } from '../schemas/mesh-data';
 import {
   changeProfileCallback,
-  changeRandomNicknameCallback,
-  raidAllRoomsCallback,
+  raidRoomCallback,
   sendFriendshipCallback,
+  setRandomNicknameCallback,
 } from '../utils/callbacks';
-import { readFileSync } from 'fs';
-import { Languages, Mesh, User } from 'ravejs/dist/schemas';
-import { Account } from '../schemas/cache';
 
 export class FunctionsHandler implements Handler {
-  private __nickname?: string;
   private __tor?: Tor;
   private __rave?: Rave;
+  private __meshHandler?: MeshHandler;
   private __proxies: string[] = [];
   private __contexts: Context[] = [];
+
+  private __totalToUsers = async (total: MeshesTotal): Promise<number[]> => {
+    const botIds = this.__contexts.map(
+      (context) => context.instance.account.id,
+    );
+    return total.users
+      .map((user) => user.id)
+      .filter((id) => !botIds.includes(id));
+  };
 
   private __torSetup = async (): Promise<Tor | undefined> => {
     try {
@@ -56,7 +54,10 @@ export class FunctionsHandler implements Handler {
     }
   };
 
-  private __contextsSetup = async (): Promise<void> => {
+  private __setupData = async (): Promise<void> => {
+    await this.__tor?.signalNewnym();
+    this.__proxies = await poolProxies();
+
     this.__contexts = [];
     SCREEN.displayLogo();
 
@@ -85,98 +86,29 @@ export class FunctionsHandler implements Handler {
     if (!this.__contexts.length) {
       display(SCREEN.locale.errors.totalContextCreationFailed);
       await delay(1);
-      return;
     }
 
     this.__rave = this.__contexts[0].instance;
   };
 
-  private __proxySetup = async (): Promise<void> => {
-    this.__proxies = [];
+  private __handleMeshes = async (): Promise<MeshesTotal> => {
+    const meshesData = await this.__meshHandler!.handle();
 
-    await this.__tor?.signalNewnym();
-
-    await pool<string>(
-      CONFIG.proxies,
-      async (proxy: string) => {
-        const rave = new Rave();
-        rave.proxy = proxy;
-
-        if (await rave.proxyIsAlive()) {
-          this.__proxies.push(proxy);
-          rave.offProxy();
-          display(SCREEN.locale.logs.proxyConnected, [proxy]);
-
-          return;
-        }
-
-        display(SCREEN.locale.errors.proxyConnectionFailed, [proxy]);
-      },
-      MAX_BATCHES.proxy,
-    );
-
-    if (!this.__proxies.length) {
-      display(SCREEN.locale.errors.totalProxyConnectionFailed);
-      await delay(1);
-      return;
-    }
+    return {
+      meshes: meshesData.flatMap((meshData) => meshData.mesh),
+      users: meshesData.flatMap((meshData) => meshData.users),
+    };
   };
 
-  private __getMeshes = async (): Promise<{ mesh: Mesh; users: User[] }[]> => {
-    const rawMeshes = await this.__rave!.mesh.getMany({
-      limit: Number(
-        await buildInput(SCREEN.locale.enters.enterMeshAmount, {
-          filter: numericFilter,
-        }),
-      ),
-      language: (await buildSelect(
-        SCREEN.locale.enters.chooseMeshLocale,
-        SCREEN.locale.choices.locales,
-      )) as Languages,
-      isPublic: true,
-    });
-
-    if (!rawMeshes.data) {
-      display(SCREEN.locale.errors.tooManyMeshes);
-      await delay(1);
-      return await this.__getMeshes();
-    }
-
-    const scrapMethod = await buildSelect(
-      SCREEN.locale.enters.chooseMeshScraping,
-      SCREEN.locale.choices.methods,
-    );
-
-    if (scrapMethod == SCRAP_METHODS.checkbox) {
-      const selectedMeshes = await buildCheckbox(
-        SCREEN.locale.enters.chooseMeshes,
-        rawMeshes.data.map((meshData) => ({
-          name: meshData.mesh.videoTitle,
-          description: SCREEN.locale.logs.usersQuantity.replace(
-            '%s',
-            meshData.users.length.toString(),
-          ),
-          value: meshData.mesh.id,
-        })),
-      );
-
-      return rawMeshes.data.filter((meshData) =>
-        selectedMeshes.includes(meshData.mesh.id),
-      );
-    } else {
-      return rawMeshes.data;
-    }
-  };
-
-  private __changeProfile = async () => {
-    const displayAvatar = await this.__rave!.user.uploadAvatar(
+  private __changeProfile = async (): Promise<void> => {
+    const displayAvatar = await this.__contexts[0].instance.user.uploadAvatar(
       readFileSync(
         await buildInput(SCREEN.locale.enters.enterAvatarPath, {
           filter: fileFilter,
         }),
       ),
     );
-    this.__nickname = await buildInput(SCREEN.locale.enters.enterNickname);
+    const displayName = await buildInput(SCREEN.locale.enters.enterNickname);
 
     await pool<Context>(
       this.__contexts,
@@ -184,68 +116,12 @@ export class FunctionsHandler implements Handler {
       MAX_BATCHES.callbacks,
       {
         displayAvatar,
-        displayName: this.__nickname,
+        displayName,
       },
     );
   };
 
-  private __changeRandomNickname = async () => {
-    await pool<Context>(
-      this.__contexts,
-      changeRandomNicknameCallback,
-      MAX_BATCHES.callbacks,
-    );
-  };
-
-  private __raidAllRooms = async (meshes: Mesh[], message: string) => {
-    const contextBatches: Context[][] = [];
-
-    for (let i = 0; i < meshes.length; i++) {
-      const accountsPerMesh = Math.floor(
-        this.__contexts.length / meshes.length,
-      );
-      const startIndex = i * accountsPerMesh;
-      const endIndex = startIndex + accountsPerMesh;
-      const batch = this.__contexts.slice(startIndex, endIndex);
-      contextBatches.push(batch);
-    }
-
-    const promises: Promise<void>[] = [];
-
-    for (let i = 0; i < meshes.length; i++) {
-      const mesh = meshes[i];
-      const contextBatch = contextBatches[i];
-
-      const worker = async () => {
-        const tasks = contextBatch.map((context) => ({
-          context,
-          meshId: mesh.id,
-        }));
-
-        await pool(
-          tasks,
-          async (task) => {
-            try {
-              await raidAllRoomsCallback(task.context, {
-                meshId: task.meshId,
-                message,
-              });
-            } catch {}
-          },
-          Math.min(MAX_BATCHES.callbacks, contextBatch.length),
-        );
-      };
-
-      promises.push(worker());
-    }
-    await Promise.all(promises);
-  };
-
-  private __raidFriends = async (rawUsers: User[]) => {
-    const userIds = rawUsers
-      .filter((user) => user.name != this.__nickname)
-      .map((user) => user.id);
-
+  private __raidFriends = async (userIds: number[]) => {
     while (true) {
       await pool<Context>(
         this.__contexts,
@@ -257,38 +133,55 @@ export class FunctionsHandler implements Handler {
     }
   };
 
-  private __globalDestruction = async () => {
-    const meshesData = await this.__getMeshes();
-    const message = await buildInput(SCREEN.locale.enters.enterMessage);
+  private __raidAllRooms = async (meshIds: string[], message: string) => {
+    const contextBatches: Context[][] = [];
 
-    await Promise.all([
-      this.__raidAllRooms(
-        meshesData.flatMap((meshData) => meshData.mesh),
-        message,
-      ),
-      this.__raidFriends(meshesData.flatMap((meshData) => meshData.users)),
-    ]);
+    for (let i = 0; i < meshIds.length; i++) {
+      const accountsPerMesh = Math.floor(
+        this.__contexts.length / meshIds.length,
+      );
+      const startIndex = i * accountsPerMesh;
+      const batch = this.__contexts.slice(
+        startIndex,
+        startIndex + accountsPerMesh,
+      );
+      contextBatches.push(batch);
+    }
+
+    const promises: Promise<void>[] = [];
+
+    for (let i = 0; i < meshIds.length; i++) {
+      promises.push(
+        (async () => {
+          await pool<Context>(
+            contextBatches[i],
+            raidRoomCallback,
+            MAX_BATCHES.callbacks,
+            {
+              meshId: meshIds[i],
+              message,
+            },
+          );
+        })(),
+      );
+    }
+    await Promise.all(promises);
   };
 
-  private __raidRoomsByLink = async (links: string[]) => {
-    const meshesData: { mesh: Mesh; users: User[] }[] = [];
-    const message = await buildInput(SCREEN.locale.enters.enterMessage);
-
-    await Promise.all(
-      links.map(async (link) => {
-        const mesh = await this.__rave?.mesh.getByLink(link);
-        if (mesh) {
-          meshesData.push({ mesh: mesh.data, users: mesh.data.users });
-        }
-      }),
+  private __exterminatus = async () => {
+    const total = await this.__handleMeshes();
+    await pool<Context>(
+      this.__contexts,
+      setRandomNicknameCallback,
+      MAX_BATCHES.callbacks,
     );
 
     await Promise.all([
       this.__raidAllRooms(
-        meshesData.flatMap((meshData) => meshData.mesh),
-        message,
+        total.meshes.map((mesh) => mesh.id),
+        await buildInput(SCREEN.locale.enters.enterMessage),
       ),
-      this.__raidFriends(meshesData.flatMap((meshData) => meshData.users)),
+      this.__raidFriends(total.users.map((user) => user.id)),
     ]);
   };
 
@@ -299,9 +192,11 @@ export class FunctionsHandler implements Handler {
 
     if (!this.__tor) {
       await this.__torSetup();
-      await this.__proxySetup();
-      await this.__contextsSetup();
+      await this.__setupData();
     }
+    this.__meshHandler = new MeshHandler(
+      this.__rave || this.__contexts[0].instance,
+    );
 
     SCREEN.displayLogo();
     display(
@@ -317,43 +212,29 @@ export class FunctionsHandler implements Handler {
     );
 
     switch (functionName) {
-      case 'changeProfile': {
-        await this.__changeProfile();
-        break;
-      }
-      case 'changeRandomNicknames': {
-        await this.__changeRandomNickname();
-        break;
-      }
-      case 'raidRoomsByLink': {
-        const links = await buildInput(SCREEN.locale.enters.enterLinks);
-        await this.__raidRoomsByLink(links.split(' '));
+      case 'exterminatus': {
+        await this.__exterminatus();
         break;
       }
       case 'raidAllRooms': {
-        const meshesData = await this.__getMeshes();
-        const message = await buildInput(SCREEN.locale.enters.enterMessage);
-
         await this.__raidAllRooms(
-          meshesData.flatMap((meshData) => meshData.mesh),
-          message,
+          (await this.__handleMeshes()).meshes.map((mesh) => mesh.id),
+          await buildInput(SCREEN.locale.enters.enterMessage),
         );
         break;
       }
       case 'raidFriends': {
-        const meshesData = await this.__getMeshes();
         await this.__raidFriends(
-          meshesData.flatMap((meshData) => meshData.users),
+          await this.__totalToUsers(await this.__handleMeshes()),
         );
         break;
       }
-      case 'globalDestruction': {
-        await this.__globalDestruction();
+      case 'changeProfile': {
+        await this.__changeProfile();
         break;
       }
-      case 'updateProxy': {
-        await this.__proxySetup();
-        await this.__contextsSetup();
+      case 'updateProxies': {
+        await this.__setupData();
         break;
       }
     }

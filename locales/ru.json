@@ -55,6 +55,11 @@
         "name": "Выбор",
         "description": "Вы можете выбрать румы сами",
         "value": "choosing"
+      },
+      {
+        "name": "Через ссылки",
+        "description": "Вы взаимодействуете с румами через ссылки",
+        "value": "links"
       }
     ],
     "main": [
@@ -71,44 +76,29 @@
     ],
     "functions": [
       {
-        "name": "Рейд рум по ссылке",
-        "description": "Рейдит румы по ссылке",
-        "value": "raidRoomsByLink"
+        "name": "☠ ϶ᴋᴄᴛᴇᴘʍинᴀᴛʏᴄ ☠",
+        "description": "Рейд всех рум + рейд заявками + случайные никнеймы",
+        "value": "exterminatus"
       },
       {
         "name": "Рейд всех рум",
-        "description": "Рейдит все комнаты сообщениями",
+        "description": "Рейдит все румы из выбранного диапазона",
         "value": "raidAllRooms"
       },
       {
-        "name": "Рейд заявкой в друзья",
-        "description": "Рейдит пользователей заявкой в друзья",
+        "name": "Рейд заявками",
+        "description": "Рейдит всех пользователей с заявками в друзья",
         "value": "raidFriends"
       },
       {
-        "name": "Глобальное разрушение",
-        "description": "Рейд всех комнат + рейд заявкой в друзья",
-        "value": "globalDestruction"
-      },
-      {
         "name": "Изменить профиль",
-        "description": "Изменить профиль всех аккаунтов",
+        "description": "Изменяет профиль всех аккаунтов",
         "value": "changeProfile"
       },
       {
-        "name": "Изменить никнеймы на случайные",
-        "description": "Изменить никнеймы всех аккаунтов на случайные",
-        "value": "changeRandomNicknames"
-      },
-      {
         "name": "Обновить прокси",
-        "description": "Обновить прокси для ботнета",
-        "value": "updateProxy"
-      },
-      {
-        "name": "Назад",
-        "description": "Вернуться к предыдущему меню",
-        "value": "back"
+        "description": "Обновляет прокси для ботнета",
+        "value": "updateProxies"
       }
     ],
     "settings": [

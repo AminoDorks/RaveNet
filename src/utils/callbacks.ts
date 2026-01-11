@@ -1,8 +1,9 @@
-import { SCREEN, SEND_MESSAGE_DELAY } from '../constants';
+import { MAX_BATCHES, SCREEN } from '../constants';
 import { CallbackArgs } from '../schemas/callback';
 import { Context } from '../schemas/context';
 import { display } from '../ui/screen';
 import { delay, generateRandomString } from './helpers';
+import { pool } from './tasks';
 
 export const changeProfileCallback = async (
   context: Context,
@@ -19,7 +20,7 @@ export const changeProfileCallback = async (
   }
 };
 
-export const raidAllRoomsCallback = async (
+export const raidRoomCallback = async (
   context: Context,
   args: CallbackArgs,
 ) => {
@@ -34,7 +35,7 @@ export const raidAllRoomsCallback = async (
           `${generateRandomString()} ${args.message} ${generateRandomString()}`,
         );
         display(SCREEN.locale.logs.messageSent, [context.instance.token]);
-      }, SEND_MESSAGE_DELAY);
+      }, args.interval);
     });
 
     meshSocket.onerror(async () => {});
@@ -47,11 +48,14 @@ export const sendFriendshipCallback = async (
 ) => {
   try {
     context.instance.offProxy();
-    for (const userId of args.userIds) {
-      await context.instance.user.sendFriendship(userId);
-      display(SCREEN.locale.logs.friendshipSent, [context.instance.token]);
-      await delay(2);
-    }
+    await pool<number>(
+      args.userIds,
+      async (userId: number) => {
+        await context.instance.user.sendFriendship(userId);
+        display(SCREEN.locale.logs.friendshipSent, [context.instance.token]);
+      },
+      MAX_BATCHES.callbacks,
+    );
   } catch {
     display(SCREEN.locale.errors.friendshipSendFailed, [
       context.instance.token,
@@ -59,7 +63,7 @@ export const sendFriendshipCallback = async (
   }
 };
 
-export const changeRandomNicknameCallback = async (
+export const setRandomNicknameCallback = async (
   context: Context,
   _: CallbackArgs,
 ) => {

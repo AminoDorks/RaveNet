@@ -1,3 +1,3 @@
 export interface Handler {
-  handle(): Promise<void>;
+  handle(): Promise<any>;
 }

@@ -13,11 +13,6 @@ export const MAX_BATCHES = {
   callbacks: 50,
 };
 
-export const SCRAP_METHODS = {
-  checkbox: 'choosing',
-  automatic: 'automatic',
-};
-
 export const COLORS = {
   red: '\x1b[31m',
   reset: '\x1b[0m',
@@ -76,5 +71,4 @@ export const CONFIG: Config = makeIfIsnt<Config>(
   ConfigSchema,
 );
 export const LOCALHOST = '127.0.0.1';
-export const SEND_MESSAGE_DELAY = 1000;
 export const SCREEN = new Screen(CONFIG.locale);
