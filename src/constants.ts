@@ -68,6 +68,7 @@ export const CONFIG: Config = makeIfIsnt<Config>(
     torPort: 9,
     proxies: [],
     customPath: '',
+    excludedIds: [],
   },
   ConfigSchema,
 );

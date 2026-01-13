@@ -128,12 +128,16 @@ export class FunctionsHandler implements Handler {
   };
 
   private __raidFriends = async (userIds: number[]) => {
+    const filteredUserIds = Array.from(
+      new Set([...userIds.filter((id) => !CONFIG.excludedIds.includes(id))]),
+    );
+
     while (true) {
       await pool<Context>(
         this.__contexts,
         sendFriendshipCallback,
         MAX_BATCHES.callbacks,
-        { userIds },
+        { userIds: filteredUserIds },
       );
       await delay(1);
     }

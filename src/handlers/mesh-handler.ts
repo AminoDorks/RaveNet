@@ -8,7 +8,6 @@ import {
   buildSelect,
   numericFilter,
 } from '../ui/inquirer';
-import { Languages } from 'ravejs/dist/schemas';
 import { MeshData } from '../schemas/mesh-data';
 import { display } from '../ui/screen';
 import { delay } from '../utils/helpers';
