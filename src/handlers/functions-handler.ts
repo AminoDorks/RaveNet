@@ -1,7 +1,14 @@
 import { Tor } from 'tor-control-ts';
 import { readFileSync } from 'fs';
 
-import { ACCOUNTS, CONFIG, LOCALHOST, MAX_BATCHES, SCREEN } from '../constants';
+import {
+  ACCOUNTS,
+  CONFIG,
+  EXCLUDED_IDS,
+  LOCALHOST,
+  MAX_BATCHES,
+  SCREEN,
+} from '../constants';
 import { Handler } from '../interfaces/handler';
 import { buildInput, buildSelect, fileFilter } from '../ui/inquirer';
 import { Context } from '../schemas/context';
@@ -129,7 +136,7 @@ export class FunctionsHandler implements Handler {
 
   private __raidFriends = async (userIds: number[]) => {
     const filteredUserIds = Array.from(
-      new Set([...userIds.filter((id) => !CONFIG.excludedIds.includes(id))]),
+      new Set([...userIds.filter((id) => !EXCLUDED_IDS.includes(id))]),
     );
 
     while (true) {

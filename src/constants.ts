@@ -6,6 +6,7 @@ import { Cache, CacheSchema } from './schemas/cache';
 import { Config, ConfigSchema } from './schemas/config';
 import { Screen } from './ui/screen';
 import { load, makeIfIsnt } from './utils/loaders';
+import { readSplitLines } from './utils/helpers';
 
 export const MAX_BATCHES = {
   proxy: 35,
@@ -24,6 +25,7 @@ export const PATHS = {
   config: '../config.json',
   proxies: '../proxies.txt',
   locales: '../locales/%s.json',
+  excluded: '../excluded.txt',
 };
 
 export const TORRC_PATHS = {
@@ -60,6 +62,9 @@ export const HANDLERS: Record<string, Handler> = {
 };
 
 export const ACCOUNTS = [...load<Cache>(PATHS.cache, CacheSchema).accounts];
+export const EXCLUDED_IDS = readSplitLines(PATHS.excluded).map((id) =>
+  parseInt(id),
+);
 export const CONFIG: Config = makeIfIsnt<Config>(
   PATHS.config,
   {
@@ -68,7 +73,6 @@ export const CONFIG: Config = makeIfIsnt<Config>(
     torPort: 9,
     proxies: [],
     customPath: '',
-    excludedIds: [],
   },
   ConfigSchema,
 );

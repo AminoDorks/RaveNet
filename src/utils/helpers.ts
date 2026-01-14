@@ -6,6 +6,15 @@ import { save } from './loaders';
 import { buildInput } from '../ui/inquirer';
 import { Context } from '../schemas/context';
 
+export const readSplitLines = (path: string): string[] => {
+  const lines = readFileSync(path, 'utf-8')
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.replace(/\r/g, ''));
+
+  return Array.from(new Set(lines));
+};
+
 export const delay = async (seconds: number) =>
   new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 
