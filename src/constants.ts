@@ -13,6 +13,7 @@ export const MAX_BATCHES = {
   contexts: 40,
   callbacks: 50,
   accounts: 20,
+  friends: 3,
 };
 
 export const COLORS = {
@@ -77,5 +78,5 @@ export const CONFIG: Config = makeIfIsnt<Config>(
   ConfigSchema,
 );
 export const LOCALHOST = '127.0.0.1';
-export const MESSAGES_INTERVAL = 1000;
+export const MESSAGES_INTERVAL = 3500;
 export const SCREEN = new Screen(CONFIG.locale);

@@ -80,7 +80,7 @@ export const sendFriendshipCallback = async (
       }
       display(SCREEN.locale.logs.friendshipSent, [context.instance.token]);
     },
-    MAX_BATCHES.callbacks,
+    MAX_BATCHES.friends,
   );
 };
 
