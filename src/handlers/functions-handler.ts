@@ -75,24 +75,33 @@ export class FunctionsHandler implements Handler {
       ACCOUNTS,
       MAX_BATCHES.accounts,
       async (proxy: string, accounts: Account[]) => {
-        for (const account of accounts) {
-          const instance = new Rave();
-          try {
-            await instance.auth.authenticate(account.token, account.deviceId);
-            display(SCREEN.locale.logs.contextCreated, [account.token]);
-          } catch {
-            display(SCREEN.locale.errors.contextCreationFailed, [
-              account.token,
-            ]);
-            await delay(1);
-            return;
-          }
+        await pool<Account>(
+          accounts,
+          async (account) => {
+            const instance = new Rave();
+            instance.proxy = proxy;
+            try {
+              const accounti = await instance.auth.authenticate(
+                account.token,
+                account.deviceId,
+              );
+              instance.offProxy();
+              display(SCREEN.locale.logs.contextCreated, [account.token]);
+            } catch {
+              display(SCREEN.locale.errors.contextCreationFailed, [
+                account.token,
+              ]);
+              await delay(1);
+              return;
+            }
 
-          this.__contexts.push({
-            instance,
-            proxy,
-          });
-        }
+            this.__contexts.push({
+              instance,
+              proxy,
+            });
+          },
+          MAX_BATCHES.accounts,
+        );
       },
     );
 
