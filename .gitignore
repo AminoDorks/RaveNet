@@ -3,6 +3,7 @@
 package-lock.json
 config.json
 cache.json
+*.jpg
 
 # Logs
 logs
