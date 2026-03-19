@@ -81,10 +81,7 @@ export class FunctionsHandler implements Handler {
             const instance = new Rave();
             instance.proxy = proxy;
             try {
-              const accounti = await instance.auth.authenticate(
-                account.token,
-                account.deviceId,
-              );
+              await instance.auth.authenticate(account.token, account.deviceId);
               instance.offProxy();
               display(SCREEN.locale.logs.contextCreated, [account.token]);
             } catch {
@@ -100,7 +97,7 @@ export class FunctionsHandler implements Handler {
               proxy,
             });
           },
-          MAX_BATCHES.accounts,
+          10,
         );
       },
     );
@@ -222,6 +219,11 @@ export class FunctionsHandler implements Handler {
     if (!this.__tor) {
       await this.__torSetup();
       await this.__setupData();
+    }
+
+    if (!this.__contexts.length) {
+      await this.handle();
+      return;
     }
     this.__meshHandler = new MeshHandler(
       this.__rave || this.__contexts[0].instance,
